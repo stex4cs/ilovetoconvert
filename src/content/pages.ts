@@ -9,7 +9,8 @@ export const BRAND = "ilovetoconvert";
 
 export type ToolId =
   | "images-to-pdf" | "word-to-pdf" | "excel-to-pdf" | "merge-pdf"
-  | "split-pdf" | "rotate-pdf" | "pdf-to-images" | "convert-images" | "pdf-to-word";
+  | "split-pdf" | "rotate-pdf" | "pdf-to-images" | "convert-images" | "pdf-to-word"
+  | "compress-pdf" | "page-numbers" | "watermark-pdf";
 
 export type Preset = {
   type?: "image/jpeg" | "image/png" | "image/webp" | "image/x-icon";
@@ -500,6 +501,75 @@ const PAGES_RAW: Page[] = [
     steps: ["Drop your PDF into the box above.", "Choose JPG and the resolution.", "Click Convert to images and download the pages or a ZIP."],
     faq: [PRIVACY_FAQ, FREE_FAQ, MOBILE_FAQ],
     related: ["pdf-to-png", "images-to-pdf", "compress-image"],
+  },
+  {
+    slug: "compress-pdf",
+    tool: "compress-pdf",
+    category: "pdf",
+    label: "Compress PDF",
+    title: `Compress PDF: Reduce PDF File Size Free, No Upload | ${BRAND}`,
+    description: "Make a PDF smaller for email and upload limits. Photos are re-compressed; text stays sharp and selectable. Free, in your browser, nothing uploaded.",
+    h1: "Compress PDF",
+    lead: "Make a PDF small enough for email and upload limits. The photos inside are re-compressed; text and graphics stay sharp and selectable.",
+    about: {
+      heading: "What actually makes a PDF big",
+      body: [
+        "Almost always the pictures: scans, phone photos and images pasted into documents at full camera resolution. Text and vector graphics take very little space.",
+        "So this re-encodes the images at a lower resolution and quality and leaves everything else alone. Unlike tools that turn every page into a picture, the text stays real text you can search and copy. An image is only replaced if the new one is actually smaller.",
+        "Recommended suits email and most upload forms. Strong is for tight limits; Light keeps photos print-ready.",
+      ],
+    },
+    steps: ["Drop your PDF into the box above.", "Pick a compression level.", "Click Compress PDF and download the smaller file. The size before and after is shown."],
+    faq: [
+      { q: "How much smaller will it get?", a: "It depends on the images. Scanned documents and photo-heavy PDFs often shrink by 50 to 90%. A PDF that is mostly text is already small and won't change much." },
+      { q: "Will the text get blurry?", a: "No. Only embedded photos are re-encoded. Text, fonts and vector graphics are copied as they are." },
+      PRIVACY_FAQ,
+      FREE_FAQ,
+    ],
+    related: ["compress-image", "merge-pdf", "pdf-to-jpg"],
+  },
+  {
+    slug: "add-page-numbers-to-pdf",
+    tool: "page-numbers",
+    category: "pdf",
+    label: "Add page numbers",
+    title: `Add Page Numbers to PDF: Free, Any Position | ${BRAND}`,
+    description: "Number the pages of a PDF: choose position, style (1, 1 / 10, Page 1 of 10), starting number and whether to skip the cover. Free, nothing uploaded.",
+    h1: "Add page numbers to a PDF",
+    lead: "Number every page in the corner or centre you choose, as 1, 1 / 10 or Page 1 of 10, starting from any number, with or without the cover page.",
+    about: {
+      heading: "Numbers that land in the right place",
+      body: ["Pages scanned sideways or stored rotated are handled too: the number is placed and turned so it reads upright, the way the page is actually viewed."],
+    },
+    steps: ["Drop your PDF into the box above.", "Choose position, style, size and starting number.", "Click Add page numbers and download."],
+    faq: [
+      { q: "Can I start numbering after the cover?", a: "Yes. Choose 'Skip (cover)' for the first page and the second page gets the starting number." },
+      PRIVACY_FAQ,
+      FREE_FAQ,
+    ],
+    related: ["merge-pdf", "watermark-pdf", "split-pdf"],
+  },
+  {
+    slug: "watermark-pdf",
+    tool: "watermark-pdf",
+    category: "pdf",
+    label: "Watermark PDF",
+    title: `Watermark PDF: Add Text or Logo to Every Page, Free | ${BRAND}`,
+    description: "Stamp CONFIDENTIAL, DRAFT, your name or your logo on every page of a PDF, once or across the page, with the opacity you choose. Free, nothing uploaded.",
+    h1: "Add a watermark to a PDF",
+    lead: "Stamp text like CONFIDENTIAL or DRAFT, or your logo, on every page: once across the middle or repeated over the whole page.",
+    about: {
+      heading: "Text in any language, or your logo",
+      body: [
+        "The watermark text is drawn by your browser, so accents, Cyrillic and other scripts work without hunting for fonts. A logo works best as a PNG with a transparent background.",
+      ],
+    },
+    steps: ["Drop your PDF into the box above.", "Type the text or add a logo, then choose colour, opacity and layout.", "Click Add watermark and download."],
+    faq: [
+      { q: "Can the watermark be removed?", a: "It's drawn onto every page as part of the content. Someone with a PDF editor could still delete it, as with any watermark; it deters copying rather than preventing it." },
+      PRIVACY_FAQ,
+    ],
+    related: ["add-page-numbers-to-pdf", "merge-pdf", "compress-pdf"],
   },
   {
     slug: "pdf-to-word",

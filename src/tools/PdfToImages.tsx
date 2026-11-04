@@ -5,19 +5,8 @@ import { canvasToBlob, extensionFor } from "../lib/images";
 import { Action, Choice, ErrorNote, Options, Results } from "../components/ui";
 import { useRunner } from "./common";
 import { useSinglePdf } from "./SinglePdf";
+import { loadPdfJs, PDFJS_ASSETS } from "../lib/pdfjs";
 import type { Preset } from "../content/pages";
-
-/**
- * pdf.js is large, so it loads only when this tool runs. The legacy build is
- * used on purpose: the modern one calls Map.prototype.getOrInsertComputed,
- * which current browsers don't ship yet, and fails on render.
- */
-async function loadPdfJs() {
-  const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
-  const worker = await import("pdfjs-dist/legacy/build/pdf.worker.min.mjs?url");
-  pdfjs.GlobalWorkerOptions.workerSrc = worker.default;
-  return pdfjs;
-}
 
 export default function PdfToImages({ preset }: { preset?: Preset }) {
   const t = useT();
@@ -58,7 +47,7 @@ export default function PdfToImages({ preset }: { preset?: Preset }) {
             onClick={() =>
               run(async () => {
                 const pdfjs = await loadPdfJs();
-                const task = pdfjs.getDocument({ data: new Uint8Array(bytes()) });
+                const task = pdfjs.getDocument({ data: new Uint8Array(bytes()), ...PDFJS_ASSETS });
                 const doc = await task.promise;
                 const base = baseName(file.name);
                 const width = String(pages).length;

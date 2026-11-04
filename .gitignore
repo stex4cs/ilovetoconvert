@@ -4,3 +4,4 @@ dist-server/
 .vercel
 .DS_Store
 .env*
+public/pdfjs/

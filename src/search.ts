@@ -31,6 +31,8 @@ const SYNONYMS: Record<string, string> = {
   remove: "delete", obrisi: "delete", erase: "delete",
   turn: "rotate", flip: "rotate", rotiraj: "rotate", okreni: "rotate",
   shrink: "compress", reduce: "compress", smaller: "compress", optimize: "compress", smanji: "compress", kompresuj: "compress",
+  numbers: "numbers", numbering: "numbers", number: "numbers", paginate: "numbers", numerisi: "numbers", brojevi: "numbers",
+  stamp: "watermark", confidential: "watermark", draft: "watermark", logo: "watermark", zig: "watermark",
   resize: "resize", scale: "resize", dimenzije: "resize",
   convert: "converter", konvertuj: "converter", pretvori: "converter",
 };

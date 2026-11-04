@@ -12,6 +12,8 @@
  *   a line starting with •, 1. or a)       → a list item
  */
 
+import { loadPdfJs, PDFJS_ASSETS } from "./pdfjs";
+
 export type Run = { text: string; bold: boolean; italic: boolean; size: number; family: "sans" | "serif" | "mono" };
 export type Para = {
   kind: "para";
@@ -280,13 +282,6 @@ const mul = (m: Matrix, n: Matrix): Matrix => [
   m[0] * n[4] + m[2] * n[5] + m[4], m[1] * n[4] + m[3] * n[5] + m[5],
 ];
 
-async function loadPdfJs() {
-  const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
-  const worker = await import("pdfjs-dist/legacy/build/pdf.worker.min.mjs?url");
-  pdfjs.GlobalWorkerOptions.workerSrc = worker.default;
-  return pdfjs;
-}
-
 type PdfImage = { width: number; height: number; kind?: number; data?: Uint8ClampedArray | Uint8Array; bitmap?: ImageBitmap };
 
 async function imageToPng(img: PdfImage): Promise<Uint8Array | null> {
@@ -314,7 +309,7 @@ export async function extractPdf(
   opts: { images?: boolean; onPage?: (n: number, total: number) => void } = {},
 ): Promise<Extracted> {
   const pdfjs = await loadPdfJs();
-  const task = pdfjs.getDocument({ data: new Uint8Array(data), fontExtraProperties: true });
+  const task = pdfjs.getDocument({ data: new Uint8Array(data), fontExtraProperties: true, ...PDFJS_ASSETS });
   const doc = await task.promise;
   const OPS = pdfjs.OPS;
 

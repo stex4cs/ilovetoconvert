@@ -14,6 +14,9 @@ export const TOOL_COMPONENTS: Record<ToolId, ToolComponent> = {
   "pdf-to-images": lazy(() => import("./PdfToImages")),
   "convert-images": lazy(() => import("./ConvertImages")),
   "pdf-to-word": lazy(() => import("./PdfToWord")),
+  "compress-pdf": lazy(() => import("./CompressPdf")),
+  "page-numbers": lazy(() => import("./PageNumbers")),
+  "watermark-pdf": lazy(() => import("./WatermarkPdf")),
 };
 
 export const TOOL_STYLE: Record<ToolId, { icon: string; color: string }> = {
@@ -26,4 +29,7 @@ export const TOOL_STYLE: Record<ToolId, { icon: string; color: string }> = {
   "pdf-to-images": { icon: "M7 3h7l5 5v13H7z M14 3v5h5 M9 18l2.5-3 2 2 1.5-1.5 2 2.5", color: "#d6409f" },
   "convert-images": { icon: "M4 7h11l-3-3 M20 17H9l3 3", color: "#3e63dd" },
   "pdf-to-word": { icon: "M7 3h7l5 5v13H7z M14 3v5h5 M9 13h6 M9 16.5h6 M9 10h2", color: "#2b5797" },
+  "compress-pdf": { icon: "M12 3v6m0 0-3-3m3 3 3-3 M12 21v-6m0 0-3 3m3-3 3 3 M4 12h16", color: "#0d9488" },
+  "page-numbers": { icon: "M7 3h10v18H7z M10 17h4 M12 7v5 M10.5 8.5 12 7", color: "#a16207" },
+  "watermark-pdf": { icon: "M7 3h10v18H7z M9 15l6-6 M9.5 10.5h0 M14.5 14.5h0", color: "#be185d" },
 };

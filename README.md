@@ -17,9 +17,13 @@ Free PDF, image and document converter that runs entirely in your browser. Files
 | [Split PDF](https://ilovetoconvert.com/split-pdf) | PDF + ranges like `1-3, 5, 8-` | One PDF per page, chosen pages, or the PDF minus pages you delete |
 | [Rotate PDF](https://ilovetoconvert.com/rotate-pdf) | PDF | All pages or only the ones you pick |
 | [PDF to JPG / PNG](https://ilovetoconvert.com/pdf-to-jpg) | PDF | One image per page at 72, 150 or 300 dpi |
+| [PDF to Word](https://ilovetoconvert.com/pdf-to-word) | PDF | Editable .docx: paragraphs, headings, lists, bold/italic, tables, images; also [PDF to text](https://ilovetoconvert.com/pdf-to-text) and [extract images](https://ilovetoconvert.com/extract-images-from-pdf) |
+| [Compress PDF](https://ilovetoconvert.com/compress-pdf) | PDF | Smaller PDF: photos re-encoded, text and vectors untouched |
+| [Page numbers](https://ilovetoconvert.com/add-page-numbers-to-pdf) | PDF | Numbers in any corner, 1 / 1 of N / Page 1 of N, skip the cover |
+| [Watermark PDF](https://ilovetoconvert.com/watermark-pdf) | PDF + text or logo | Diagonal or tiled stamp, any script, chosen opacity |
 | [Image converter](https://ilovetoconvert.com/image-converter) | everything above | JPG, PNG, WebP, or an **ICO favicon** with 16 to 256 px inside |
 
-Those eight tools sit behind 42 landing pages, one per conversion people search for: [HEIC to JPG](https://ilovetoconvert.com/heic-to-jpg), [PSD to PNG](https://ilovetoconvert.com/psd-to-png), [TIFF to PDF](https://ilovetoconvert.com/tiff-to-pdf), [favicon generator](https://ilovetoconvert.com/favicon-generator) and so on. Each page opens its tool with the right preset.
+Those tools sit behind 48 landing pages, one per conversion people search for: [HEIC to JPG](https://ilovetoconvert.com/heic-to-jpg), [PSD to PNG](https://ilovetoconvert.com/psd-to-png), [TIFF to PDF](https://ilovetoconvert.com/tiff-to-pdf), [favicon generator](https://ilovetoconvert.com/favicon-generator) and so on. Each page opens its tool with the right preset.
 
 A search box on every page finds the right tool from the words people actually type: "jpeg to pdf", "iphone photo", "photoshop", "combine pdfs", "shrink image", and a few Serbian ones. Press `/` or `Ctrl/⌘ K` to jump to it.
 
