@@ -1,48 +1,54 @@
-# Konvertuj
+# ilovetoconvert
 
-Free PDF and image tools that run entirely in the browser. Files are never uploaded: there is no server to upload them to. No sign-up, no watermark, no limits, no tracking.
+Free PDF, image and document converter that runs entirely in your browser. Files are never uploaded, because there's no server to upload them to. No sign-up, no watermark, no limits, no tracking.
 
-**Live: [konvertuj.vercel.app](https://konvertuj.vercel.app)** · Serbian and English
+**Live: [ilovetoconvert.vercel.app](https://ilovetoconvert.vercel.app)**
 
-![Konvertuj](docs/screenshot.png)
+![ilovetoconvert home page](docs/screenshot.png)
 
-## Tools
+## What it does
 
-| Tool | Input | Output |
+| Tool | Reads | Writes |
 | --- | --- | --- |
-| Images to PDF | JPG, PNG, WebP, **HEIC** (iPhone), **multi-page TIFF** (scanners), **PSD**, **SVG**, **AVIF**, GIF, BMP, ICO | One PDF, pages in the order you choose; A4, Letter or image size; automatic orientation |
-| Word to PDF | .docx, **Markdown**, plain text | PDF with real, selectable text, headers, footers, tables, images |
-| Excel to PDF | .xlsx, .xls, **.ods**, **CSV** | PDF, every sheet included, landscape or portrait |
-| Merge PDF | PDFs | One PDF |
-| Extract or delete pages | PDF + page ranges (`1-3, 5, 8-`) | Chosen pages, one PDF per page, or the PDF without the pages you remove |
-| Rotate PDF | PDF | All pages or only the ones you choose |
-| PDF to images | PDF | JPG or PNG per page at 72, 150 or 300 dpi |
-| Convert and resize images | everything Images to PDF reads | JPG, PNG, WebP, or an **ICO favicon** holding 16 to 256 px |
+| [Images to PDF](https://ilovetoconvert.vercel.app/images-to-pdf) | JPG, PNG, WebP, **HEIC** (iPhone), **multi-page TIFF**, **PSD**, **SVG**, **AVIF**, GIF, BMP, ICO | One PDF in the order you choose; A4, Letter or image-sized pages; automatic orientation |
+| [Word to PDF](https://ilovetoconvert.vercel.app/word-to-pdf) | .docx, **Markdown**, plain text | PDF with real, selectable text, headers, footers, tables and images |
+| [Excel to PDF](https://ilovetoconvert.vercel.app/excel-to-pdf) | .xlsx, .xls, **.ods**, **CSV** | PDF with every sheet, landscape or portrait |
+| [Merge PDF](https://ilovetoconvert.vercel.app/merge-pdf) | PDFs | One PDF |
+| [Split PDF](https://ilovetoconvert.vercel.app/split-pdf) | PDF + ranges like `1-3, 5, 8-` | One PDF per page, chosen pages, or the PDF minus pages you delete |
+| [Rotate PDF](https://ilovetoconvert.vercel.app/rotate-pdf) | PDF | All pages or only the ones you pick |
+| [PDF to JPG / PNG](https://ilovetoconvert.vercel.app/pdf-to-jpg) | PDF | One image per page at 72, 150 or 300 dpi |
+| [Image converter](https://ilovetoconvert.vercel.app/image-converter) | everything above | JPG, PNG, WebP, or an **ICO favicon** with 16 to 256 px inside |
+
+Those eight tools sit behind 42 landing pages, one per conversion people search for: [HEIC to JPG](https://ilovetoconvert.vercel.app/heic-to-jpg), [PSD to PNG](https://ilovetoconvert.vercel.app/psd-to-png), [TIFF to PDF](https://ilovetoconvert.vercel.app/tiff-to-pdf), [favicon generator](https://ilovetoconvert.vercel.app/favicon-generator) and so on. Each page opens its tool with the right preset.
+
+![HEIC to JPG page](docs/tool.png)
 
 ## How it works
 
-- **PDF editing** with [pdf-lib](https://pdf-lib.js.org): merge, extract, rotate and delete without re-rendering, so text and quality stay exactly as they were.
-- **PDF rendering** with [pdf.js](https://mozilla.github.io/pdf.js/) (the legacy build: the modern one relies on a `Map` method browsers don't ship yet).
-- **Images** go through a canvas, so phone photos come out upright. HEIC is decoded with libheif ([heic2any](https://github.com/alexcorvi/heic2any)), TIFF with [UTIF](https://github.com/photopea/UTIF.js), PSD with [ag-psd](https://github.com/Agamnentzar/ag-psd) using the flattened image Photoshop stores.
-- **Word, Markdown and spreadsheets** are laid out as HTML ([docx-preview](https://github.com/VolodymyrBaydalka/docxjs), [marked](https://marked.js.org), [SheetJS](https://sheetjs.com)) and turned into PDF by the browser's own print engine. That's why the result has real text instead of a picture of text. Word bullets drawn with Symbol/Wingdings characters are replaced with real ones, and each Word page prints at its own size.
-- Every heavy library loads only when its tool needs it. The home page is about 75 KB gzipped.
+- **PDF editing** with [pdf-lib](https://pdf-lib.js.org): pages are copied, rotated and removed without re-rendering, so text, links and quality stay exactly as they were.
+- **PDF rendering** with [pdf.js](https://mozilla.github.io/pdf.js/), the legacy build on purpose: the modern one calls `Map.prototype.getOrInsertComputed`, which browsers don't ship yet.
+- **Images** go through a canvas, so phone photos come out upright. HEIC is decoded with libheif ([heic2any](https://github.com/alexcorvi/heic2any)), TIFF with [UTIF](https://github.com/photopea/UTIF.js) (every page, previews skipped), PSD with [ag-psd](https://github.com/Agamnentzar/ag-psd) using the flattened image Photoshop stores. ICO files are written by hand: a directory plus one PNG per size.
+- **Word, Markdown and spreadsheets** are laid out as HTML ([docx-preview](https://github.com/VolodymyrBaydalka/docxjs), [marked](https://marked.js.org), [SheetJS](https://sheetjs.com)) and saved by the browser's own print engine, which is why the PDF has real text instead of a picture of text. Word bullets drawn with Symbol/Wingdings characters are swapped for real ones, and each Word page prints at its own paper size.
+- Heavy libraries load only when their tool runs. A landing page is about 12 KB of HTML plus about 85 KB of gzipped JavaScript.
 
-The old binary `.doc` format can't be read in a browser; the tool says so and explains how to save it as `.docx`.
+## SEO
+
+Every route is prerendered at build time (`react-dom/static`), so crawlers get complete HTML: title, meta description, canonical URL, Open Graph and Twitter cards, and JSON-LD (`WebApplication`, `BreadcrumbList`, `FAQPage`, `HowTo`, plus `WebSite` and an `ItemList` of tools on the home page). The build also writes `sitemap.xml`, `robots.txt` and a real `404.html`. Unknown paths return a 404 status, not the home page.
+
+The site URL used in canonicals, Open Graph and the sitemap comes from `VITE_SITE_URL` (default `https://ilovetoconvert.vercel.app`). When the domain changes, set that variable in Vercel and redeploy.
 
 ## Run it
 
 ```bash
 npm install
-npm run dev       # http://localhost:5173
-npm test          # unit tests (page ranges, layout, PDF operations, ICO)
-npm run build     # static site in dist/
+npm run dev       # http://localhost:5173 (client-rendered)
+npm test          # unit tests: page ranges, layout, PDF operations, ICO
+npm run build     # type-check, client + SSR build, prerender into dist/
 ```
 
-It's a static site: any host that can serve `index.html` for every path works. `vercel.json` has the rewrite for Vercel.
+`dist/` is a static site. `vercel.json` turns on clean URLs (`/heic-to-jpg` serves `heic-to-jpg.html`).
 
-## Srpski
-
-Besplatni alati za PDF i slike koji rade u pregledaču: slike (i HEIC sa iPhone-a, TIFF skenovi, PSD, SVG) u PDF, Word i Excel u PDF, spajanje, deljenje i rotiranje PDF-a, PDF u slike, konverzija slika i favicon. Fajlovi se nigde ne šalju.
+The old binary `.doc` format can't be read in a browser; the Word tool says so and explains how to save it as `.docx`.
 
 ## License
 

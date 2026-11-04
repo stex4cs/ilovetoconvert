@@ -5,6 +5,7 @@ import { canvasToBlob, extensionFor } from "../lib/images";
 import { Action, Choice, ErrorNote, Options, Results } from "../components/ui";
 import { useRunner } from "./common";
 import { useSinglePdf } from "./SinglePdf";
+import type { Preset } from "../content/pages";
 
 /**
  * pdf.js is large, so it loads only when this tool runs. The legacy build is
@@ -18,11 +19,11 @@ async function loadPdfJs() {
   return pdfjs;
 }
 
-export default function PdfToImages() {
+export default function PdfToImages({ preset }: { preset?: Preset }) {
   const t = useT();
   const { busy, error, outputs, run, reset } = useRunner();
   const { file, pages, picker, bytes } = useSinglePdf(reset);
-  const [type, setType] = useState<"image/jpeg" | "image/png">("image/jpeg");
+  const [type, setType] = useState<"image/jpeg" | "image/png">(preset?.type === "image/png" ? "image/png" : "image/jpeg");
   const [dpi, setDpi] = useState(150);
 
   return (

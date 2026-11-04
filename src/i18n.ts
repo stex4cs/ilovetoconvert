@@ -187,15 +187,18 @@ const en: Dict = {
 export const dictionaries: Record<Lang, Dict> = { sr, en };
 export type Key = keyof Dict;
 
-export function detectLang(): Lang {
-  const saved = localStorage.getItem("lang");
-  if (saved === "sr" || saved === "en") return saved;
-  const nav = navigator.languages?.join(",") ?? navigator.language ?? "";
-  return /\b(sr|hr|bs|sh|cnr|me)\b/i.test(nav) ? "sr" : "en";
+/** The interface language the visitor picked before, if any. English otherwise. */
+export function savedLang(): Lang | null {
+  try {
+    const saved = localStorage.getItem("lang");
+    return saved === "sr" || saved === "en" ? saved : null;
+  } catch {
+    return null;
+  }
 }
 
 export const LangContext = createContext<{ lang: Lang; setLang: (l: Lang) => void }>({
-  lang: "sr",
+  lang: "en",
   setLang: () => {},
 });
 

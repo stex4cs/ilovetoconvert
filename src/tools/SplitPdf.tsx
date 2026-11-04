@@ -5,14 +5,15 @@ import { baseName, parseRanges, RangeError_ } from "../lib/pages";
 import { Action, Choice, ErrorNote, Options, Results } from "../components/ui";
 import { UserError, useRunner } from "./common";
 import { useSinglePdf } from "./SinglePdf";
+import type { Preset } from "../content/pages";
 
 type Mode = "ranges" | "each" | "delete";
 
-export default function SplitPdf() {
+export default function SplitPdf({ preset }: { preset?: Preset }) {
   const t = useT();
   const { busy, error, outputs, run, reset } = useRunner();
   const { file, pages, picker, bytes } = useSinglePdf(reset);
-  const [mode, setMode] = useState<Mode>("ranges");
+  const [mode, setMode] = useState<Mode>(preset?.mode ?? "ranges");
   const [ranges, setRanges] = useState("");
 
   const chosen = () => {

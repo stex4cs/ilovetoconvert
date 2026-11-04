@@ -1,25 +1,17 @@
 <!doctype html>
-<html lang="sr">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Konvertuj · Besplatni alati za PDF i slike</title>
-    <meta
-      name="description"
-      content="Slike u PDF, Word u PDF, spajanje i deljenje PDF-a, PDF u slike, HEIC u JPG. Besplatno, bez registracije, fajlovi ne napuštaju vaš uređaj."
-    />
+    <!--head-->
     <meta name="theme-color" content="#6366f1" />
-    <meta property="og:title" content="Konvertuj · Besplatni alati za PDF i slike" />
-    <meta
-      property="og:description"
-      content="Slike u PDF, Word u PDF, spajanje PDF-a, PDF u slike, HEIC u JPG. Sve u pregledaču, fajlovi se nigde ne šalju."
-    />
-    <meta property="og:type" content="website" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
   </head>
   <body>
-    <div id="root"></div>
-    <noscript>Konvertuj radi u pregledaču i treba mu JavaScript.</noscript>
-    <script type="module" src="/src/main.tsx"></script>
+    <div id="root"><!--app--></div>
+    <script type="module" src="/src/entry-client.tsx"></script>
   </body>
 </html>

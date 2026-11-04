@@ -14,8 +14,12 @@ export function useRunner() {
     try {
       setOutputs(await job());
     } catch (e) {
-      console.error(e);
-      setError(e instanceof UserError ? e.message : fallbackError);
+      if (e instanceof UserError) {
+        setError(e.message);
+      } else {
+        console.error(e);
+        setError(fallbackError);
+      }
     } finally {
       setBusy(false);
     }

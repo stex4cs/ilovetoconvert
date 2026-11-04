@@ -1,5 +1,16 @@
 {
-  "rewrites": [{ "source": "/((?!assets/).*)", "destination": "/index.html" }],
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
+    { "source": "/slike-u-pdf", "destination": "/images-to-pdf", "permanent": true },
+    { "source": "/word-u-pdf", "destination": "/word-to-pdf", "permanent": true },
+    { "source": "/excel-u-pdf", "destination": "/excel-to-pdf", "permanent": true },
+    { "source": "/spoji-pdf", "destination": "/merge-pdf", "permanent": true },
+    { "source": "/izdvoji-strane", "destination": "/split-pdf", "permanent": true },
+    { "source": "/rotiraj-pdf", "destination": "/rotate-pdf", "permanent": true },
+    { "source": "/pdf-u-slike", "destination": "/pdf-to-jpg", "permanent": true },
+    { "source": "/konvertuj-slike", "destination": "/image-converter", "permanent": true }
+  ],
   "headers": [
     {
       "source": "/(.*)",

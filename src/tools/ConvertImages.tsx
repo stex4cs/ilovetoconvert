@@ -14,13 +14,14 @@ import {
 } from "../lib/images";
 import { Action, Choice, DropZone, ErrorNote, FileList, Options, Results } from "../components/ui";
 import { useRunner } from "./common";
+import type { Preset } from "../content/pages";
 
-export default function ConvertImages() {
+export default function ConvertImages({ preset }: { preset?: Preset }) {
   const t = useT();
   const [files, setFiles] = useState<File[]>([]);
-  const [type, setType] = useState<OutputType>("image/jpeg");
-  const [quality, setQuality] = useState(0.85);
-  const [maxSide, setMaxSide] = useState(0);
+  const [type, setType] = useState<OutputType>(preset?.type ?? "image/jpeg");
+  const [quality, setQuality] = useState(preset?.quality ?? 0.85);
+  const [maxSide, setMaxSide] = useState(preset?.maxSide ?? 0);
   const { busy, error, outputs, run, reset } = useRunner();
 
   const add = (more: File[]) => {
