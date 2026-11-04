@@ -186,11 +186,11 @@ export function Options({ children }: { children: ReactNode }) {
 
 /* ---------- Action + result ---------- */
 
-export function Action(props: { label: string; busy: boolean; disabled?: boolean; onClick: () => void }) {
+export function Action(props: { label: string; busy: boolean; busyLabel?: string; disabled?: boolean; onClick: () => void }) {
   const t = useT();
   return (
     <button className="primary" disabled={props.busy || props.disabled} onClick={props.onClick}>
-      {props.busy ? t("working") : props.label}
+      {props.busy ? props.busyLabel || t("working") : props.label}
     </button>
   );
 }

@@ -53,7 +53,7 @@ export function words(text: string): string[] {
 type Entry = { page: Page; words: Set<string>; label: string; order: number };
 
 /** What people convert most, so a broad query ("iphone", "pdf") starts with these. */
-const POPULAR = ["heic-to-jpg", "jpg-to-pdf", "merge-pdf", "word-to-pdf", "pdf-to-jpg", "compress-image", "images-to-pdf", "png-to-jpg", "webp-to-jpg", "split-pdf"];
+const POPULAR = ["heic-to-jpg", "pdf-to-word", "jpg-to-pdf", "merge-pdf", "word-to-pdf", "pdf-to-jpg", "compress-image", "images-to-pdf", "png-to-jpg", "webp-to-jpg", "split-pdf"];
 
 const INDEX: Entry[] = PAGES.map((page, order) => {
   const extra: string[] = [];

@@ -203,7 +203,7 @@ function Header({ home }: { home: boolean }) {
 }
 
 const FEATURED: Record<Category, string[]> = {
-  pdf: ["images-to-pdf", "merge-pdf", "split-pdf", "rotate-pdf", "pdf-to-jpg"],
+  pdf: ["pdf-to-word", "images-to-pdf", "merge-pdf", "split-pdf", "rotate-pdf", "pdf-to-jpg"],
   document: ["word-to-pdf", "excel-to-pdf", "markdown-to-pdf"],
   image: ["heic-to-jpg", "image-converter", "compress-image", "favicon-generator"],
 };

@@ -9,13 +9,14 @@ export const BRAND = "ilovetoconvert";
 
 export type ToolId =
   | "images-to-pdf" | "word-to-pdf" | "excel-to-pdf" | "merge-pdf"
-  | "split-pdf" | "rotate-pdf" | "pdf-to-images" | "convert-images";
+  | "split-pdf" | "rotate-pdf" | "pdf-to-images" | "convert-images" | "pdf-to-word";
 
 export type Preset = {
   type?: "image/jpeg" | "image/png" | "image/webp" | "image/x-icon";
   quality?: number;
   maxSide?: number;
   mode?: "ranges" | "each" | "delete";
+  target?: "docx" | "txt" | "images";
 };
 
 export type Category = "pdf" | "image" | "document";
@@ -499,6 +500,71 @@ const PAGES_RAW: Page[] = [
     steps: ["Drop your PDF into the box above.", "Choose JPG and the resolution.", "Click Convert to images and download the pages or a ZIP."],
     faq: [PRIVACY_FAQ, FREE_FAQ, MOBILE_FAQ],
     related: ["pdf-to-png", "images-to-pdf", "compress-image"],
+  },
+  {
+    slug: "pdf-to-word",
+    tool: "pdf-to-word",
+    preset: { target: "docx" },
+    category: "pdf",
+    label: "PDF to Word",
+    title: `PDF to Word: Convert PDF to Editable DOCX, Free | ${BRAND}`,
+    description: "Convert PDF to an editable Word document with paragraphs, headings, lists, bold and italic text and images. Free, in your browser, nothing uploaded.",
+    h1: "PDF to Word",
+    lead: "Turn a PDF back into an editable Word document: paragraphs, headings, lists, bold and italic text and images, on the same page size.",
+    about: {
+      heading: "How the conversion works",
+      body: [
+        "A PDF doesn't store paragraphs, only letters placed at coordinates. The converter reads every line's position, size and font, joins lines into paragraphs, recognises headings by their size, turns • and 1. lines into lists, keeps bold and italic, reads two-column pages left column first, and places each image where it was.",
+        "Simple documents such as letters, contracts, reports and CVs come out ready to edit. Complex layouts with tables, text boxes or magazine-style columns may need some tidying in Word.",
+        "Scanned PDFs are pictures of pages with no text in them. Those come out as page images; turning them into text needs OCR.",
+      ],
+    },
+    steps: ["Drop your PDF into the box above.", "Click Convert to Word.", "Download the .docx and open it in Word, Google Docs, Pages or LibreOffice."],
+    faq: [
+      { q: "Will the Word file look exactly like the PDF?", a: "The content, order, headings, emphasis and images carry over, and the page size is kept. Exact positioning of every element isn't: the point is a document you can edit, not a picture of the PDF." },
+      { q: "Can I convert a scanned PDF?", a: "A scan has no text layer, so the Word file will contain the pages as images. Text recognition (OCR) is needed to make it editable." },
+      { q: "Does it handle Cyrillic, accents and other alphabets?", a: "Yes. The text is read as Unicode, so Serbian Cyrillic and Latin, accented letters and other scripts come across as they are." },
+      PRIVACY_FAQ,
+    ],
+    related: ["word-to-pdf", "pdf-to-text", "extract-images-from-pdf", "merge-pdf"],
+  },
+  {
+    slug: "pdf-to-text",
+    tool: "pdf-to-word",
+    preset: { target: "txt" },
+    category: "pdf",
+    label: "PDF to text",
+    title: `PDF to Text: Extract Text From PDF to TXT, Free | ${BRAND}`,
+    description: "Extract all the text from a PDF as a clean .txt file, paragraph by paragraph, in reading order. Free, in your browser, nothing uploaded.",
+    h1: "PDF to text",
+    lead: "Get all the text out of a PDF as a plain .txt file, paragraph by paragraph and in reading order, even from two-column pages.",
+    about: {
+      heading: "Clean text, not a copy-paste mess",
+      body: [
+        "Copying from a PDF viewer breaks lines in the middle of sentences and mixes up columns. This joins lines back into paragraphs, removes hyphens at line ends and reads columns in order.",
+      ],
+    },
+    steps: ["Drop your PDF into the box above.", "Click Extract text.", "Download the .txt file."],
+    faq: [{ q: "Does it work on scanned PDFs?", a: "No. A scan contains pictures of text, not text; it needs OCR first." }, PRIVACY_FAQ, FREE_FAQ],
+    related: ["pdf-to-word", "extract-images-from-pdf", "split-pdf"],
+  },
+  {
+    slug: "extract-images-from-pdf",
+    tool: "pdf-to-word",
+    preset: { target: "images" },
+    category: "pdf",
+    label: "Extract images from PDF",
+    title: `Extract Images From PDF: Save Every Picture, Free | ${BRAND}`,
+    description: "Save every photo and graphic embedded in a PDF as a PNG file, at the size it's stored in. Download one by one or as a ZIP. Free, nothing uploaded.",
+    h1: "Extract images from a PDF",
+    lead: "Save every photo and picture embedded in a PDF as its own PNG file, at the full size it's stored in.",
+    about: {
+      heading: "The original images, not screenshots",
+      body: ["Instead of rendering pages, this pulls out the images the PDF actually contains, so a photo comes out at its stored resolution. Tiny decorative images like bullets and lines are skipped."],
+    },
+    steps: ["Drop your PDF into the box above.", "Click Extract images.", "Download the images one by one or all as a ZIP."],
+    faq: [{ q: "Why are some images missing?", a: "Images smaller than about 24 points on the page (icons, bullets, rules) are skipped on purpose. Vector graphics aren't images and can't be extracted this way; use PDF to PNG to capture whole pages." }, PRIVACY_FAQ],
+    related: ["pdf-to-jpg", "pdf-to-word", "compress-image"],
   },
   {
     slug: "pdf-to-png",
