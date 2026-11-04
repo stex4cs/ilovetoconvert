@@ -2,7 +2,7 @@
 
 Free PDF, image and document converter that runs entirely in your browser. Files are never uploaded, because there's no server to upload them to. No sign-up, no watermark, no limits, no tracking.
 
-**Live: [ilovetoconvert.vercel.app](https://ilovetoconvert.vercel.app)**
+**Live: [ilovetoconvert.com](https://ilovetoconvert.com)**
 
 ![ilovetoconvert home page](docs/screenshot.png)
 
@@ -10,16 +10,16 @@ Free PDF, image and document converter that runs entirely in your browser. Files
 
 | Tool | Reads | Writes |
 | --- | --- | --- |
-| [Images to PDF](https://ilovetoconvert.vercel.app/images-to-pdf) | JPG, PNG, WebP, **HEIC** (iPhone), **multi-page TIFF**, **PSD**, **SVG**, **AVIF**, GIF, BMP, ICO | One PDF in the order you choose; A4, Letter or image-sized pages; automatic orientation |
-| [Word to PDF](https://ilovetoconvert.vercel.app/word-to-pdf) | .docx, **Markdown**, plain text | PDF with real, selectable text, headers, footers, tables and images |
-| [Excel to PDF](https://ilovetoconvert.vercel.app/excel-to-pdf) | .xlsx, .xls, **.ods**, **CSV** | PDF with every sheet, landscape or portrait |
-| [Merge PDF](https://ilovetoconvert.vercel.app/merge-pdf) | PDFs | One PDF |
-| [Split PDF](https://ilovetoconvert.vercel.app/split-pdf) | PDF + ranges like `1-3, 5, 8-` | One PDF per page, chosen pages, or the PDF minus pages you delete |
-| [Rotate PDF](https://ilovetoconvert.vercel.app/rotate-pdf) | PDF | All pages or only the ones you pick |
-| [PDF to JPG / PNG](https://ilovetoconvert.vercel.app/pdf-to-jpg) | PDF | One image per page at 72, 150 or 300 dpi |
-| [Image converter](https://ilovetoconvert.vercel.app/image-converter) | everything above | JPG, PNG, WebP, or an **ICO favicon** with 16 to 256 px inside |
+| [Images to PDF](https://ilovetoconvert.com/images-to-pdf) | JPG, PNG, WebP, **HEIC** (iPhone), **multi-page TIFF**, **PSD**, **SVG**, **AVIF**, GIF, BMP, ICO | One PDF in the order you choose; A4, Letter or image-sized pages; automatic orientation |
+| [Word to PDF](https://ilovetoconvert.com/word-to-pdf) | .docx, **Markdown**, plain text | PDF with real, selectable text, headers, footers, tables and images |
+| [Excel to PDF](https://ilovetoconvert.com/excel-to-pdf) | .xlsx, .xls, **.ods**, **CSV** | PDF with every sheet, landscape or portrait |
+| [Merge PDF](https://ilovetoconvert.com/merge-pdf) | PDFs | One PDF |
+| [Split PDF](https://ilovetoconvert.com/split-pdf) | PDF + ranges like `1-3, 5, 8-` | One PDF per page, chosen pages, or the PDF minus pages you delete |
+| [Rotate PDF](https://ilovetoconvert.com/rotate-pdf) | PDF | All pages or only the ones you pick |
+| [PDF to JPG / PNG](https://ilovetoconvert.com/pdf-to-jpg) | PDF | One image per page at 72, 150 or 300 dpi |
+| [Image converter](https://ilovetoconvert.com/image-converter) | everything above | JPG, PNG, WebP, or an **ICO favicon** with 16 to 256 px inside |
 
-Those eight tools sit behind 42 landing pages, one per conversion people search for: [HEIC to JPG](https://ilovetoconvert.vercel.app/heic-to-jpg), [PSD to PNG](https://ilovetoconvert.vercel.app/psd-to-png), [TIFF to PDF](https://ilovetoconvert.vercel.app/tiff-to-pdf), [favicon generator](https://ilovetoconvert.vercel.app/favicon-generator) and so on. Each page opens its tool with the right preset.
+Those eight tools sit behind 42 landing pages, one per conversion people search for: [HEIC to JPG](https://ilovetoconvert.com/heic-to-jpg), [PSD to PNG](https://ilovetoconvert.com/psd-to-png), [TIFF to PDF](https://ilovetoconvert.com/tiff-to-pdf), [favicon generator](https://ilovetoconvert.com/favicon-generator) and so on. Each page opens its tool with the right preset.
 
 A search box on every page finds the right tool from the words people actually type: "jpeg to pdf", "iphone photo", "photoshop", "combine pdfs", "shrink image", and a few Serbian ones. Press `/` or `Ctrl/⌘ K` to jump to it.
 
@@ -37,7 +37,7 @@ A search box on every page finds the right tool from the words people actually t
 
 Every route is prerendered at build time (`react-dom/static`), so crawlers get complete HTML: title, meta description, canonical URL, Open Graph and Twitter cards, and JSON-LD (`WebApplication`, `BreadcrumbList`, `FAQPage`, `HowTo`, plus `WebSite` and an `ItemList` of tools on the home page). The build also writes `sitemap.xml`, `robots.txt` and a real `404.html`. Unknown paths return a 404 status, not the home page.
 
-The site URL used in canonicals, Open Graph and the sitemap comes from `VITE_SITE_URL` (default `https://ilovetoconvert.vercel.app`). When the domain changes, set that variable in Vercel and redeploy.
+Canonical URLs, Open Graph and the sitemap use `https://ilovetoconvert.com`; set `VITE_SITE_URL` to build a copy for another origin.
 
 ## Run it
 

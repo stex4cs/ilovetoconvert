@@ -5,8 +5,8 @@
  */
 import { BRAND, HOME, PAGES, howToHeading, pageBySlug, type Page } from "./content/pages";
 
-/** Set VITE_SITE_URL when the domain changes (ilovetoconvert.com later). */
-export const SITE_URL = (import.meta.env.VITE_SITE_URL || "https://ilovetoconvert.vercel.app").replace(/\/$/, "");
+/** The public origin; VITE_SITE_URL overrides it (e.g. for a staging copy). */
+export const SITE_URL = (import.meta.env.VITE_SITE_URL || "https://ilovetoconvert.com").replace(/\/$/, "");
 
 export type Head = {
   title: string;
