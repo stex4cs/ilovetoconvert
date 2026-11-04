@@ -527,6 +527,21 @@ for (const p of PAGES_RAW) {
 }
 
 export const PAGES = PAGES_RAW;
+
+const SPECIAL_HOWTO: Record<string, string> = {
+  "favicon-generator": "How to make a favicon.ico",
+  "image-converter": "How to convert images",
+};
+const VERBS = /^(Convert|Merge|Split|Extract|Delete|Rotate|Compress|Resize)\b/;
+
+/** "How to convert Word to PDF", "How to merge PDF files": the heading and HowTo name. */
+export function howToHeading(page: Page): string {
+  if (SPECIAL_HOWTO[page.slug]) return SPECIAL_HOWTO[page.slug]!;
+  if (VERBS.test(page.h1)) return `How to ${page.h1.charAt(0).toLowerCase()}${page.h1.slice(1)}`;
+  // "Images to PDF" → "images"; formats and product names keep their capitals.
+  const h1 = page.h1.replace(/^Images\b/, "images");
+  return `How to convert ${h1}`;
+}
 export const pageBySlug = (slug: string) => PAGES.find((p) => p.slug === slug);
 
 export const HOME = {

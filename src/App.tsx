@@ -1,8 +1,9 @@
-import { Suspense, useEffect, useState, type MouseEvent, type ReactNode } from "react";
+import { Suspense, useEffect, useId, useMemo, useRef, useState, type KeyboardEvent, type MouseEvent, type ReactNode } from "react";
 import { LangContext, savedLang, useT, type Lang } from "./i18n";
-import { BRAND, CATEGORY_LABEL, HOME, PAGES, pageBySlug, type Category, type Page } from "./content/pages";
+import { BRAND, CATEGORY_LABEL, HOME, PAGES, howToHeading, pageBySlug, type Category, type Page } from "./content/pages";
 import { TOOL_COMPONENTS, TOOL_STYLE } from "./tools/registry";
 import { applyHead, headFor, normalizePath } from "./seo";
+import { search } from "./search";
 
 const GITHUB = "https://github.com/stex4cs/ilovetoconvert";
 
@@ -62,7 +63,121 @@ export function Logo() {
   );
 }
 
-function Header() {
+/**
+ * Tool search as an ARIA combobox: type, arrows to move, Enter to open,
+ * Esc to clear. "/" or Ctrl/⌘+K focuses it from anywhere on the page.
+ */
+function SearchBox({ variant }: { variant: "hero" | "header" }) {
+  const t = useT();
+  const id = useId();
+  const input = useRef<HTMLInputElement>(null);
+  const [q, setQ] = useState("");
+  const [open, setOpen] = useState(false);
+  const [active, setActive] = useState(0);
+  const results = useMemo(() => search(q), [q]);
+  const showList = open && q.trim().length > 0;
+
+  useEffect(() => {
+    const onKey = (e: globalThis.KeyboardEvent) => {
+      const typing = /^(INPUT|TEXTAREA|SELECT)$/.test((e.target as HTMLElement).tagName);
+      const shortcut = (e.key === "/" && !typing) || ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k");
+      if (!shortcut) return;
+      // The hero box wins on the home page; the header box everywhere else.
+      const target = document.querySelector<HTMLInputElement>(".search.hero input") ?? document.querySelector<HTMLInputElement>(".search.header input");
+      if (target !== input.current) return;
+      e.preventDefault();
+      input.current?.focus();
+      input.current?.select();
+    };
+    addEventListener("keydown", onKey);
+    return () => removeEventListener("keydown", onKey);
+  }, []);
+
+  const go = (slug: string) => {
+    setQ("");
+    setOpen(false);
+    input.current?.blur();
+    navigate(`/${slug}`);
+  };
+
+  const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setOpen(true);
+      setActive((a) => Math.min(a + 1, results.length - 1));
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setActive((a) => Math.max(a - 1, 0));
+    } else if (e.key === "Enter" && results[active]) {
+      e.preventDefault();
+      go(results[active]!.slug);
+    } else if (e.key === "Escape") {
+      setQ("");
+      setOpen(false);
+    }
+  };
+
+  return (
+    <div className={`search ${variant}`} role="search">
+      <div className="search-field">
+      <svg className="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+        <circle cx="11" cy="11" r="7" />
+        <path d="m20 20-3.5-3.5" strokeLinecap="round" />
+      </svg>
+      <input
+        ref={input}
+        type="search"
+        role="combobox"
+        aria-label={t("searchLabel")}
+        aria-expanded={showList}
+        aria-controls={`${id}-list`}
+        aria-autocomplete="list"
+        aria-activedescendant={showList && results[active] ? `${id}-${results[active]!.slug}` : undefined}
+        placeholder={variant === "hero" ? t("searchHero") : t("searchShort")}
+        value={q}
+        onChange={(e) => {
+          setQ(e.target.value);
+          setActive(0);
+          setOpen(true);
+        }}
+        onFocus={() => setOpen(true)}
+        onBlur={() => setTimeout(() => setOpen(false), 150)}
+        onKeyDown={onKeyDown}
+        autoComplete="off"
+        spellCheck={false}
+      />
+      {variant === "hero" && <kbd className="kbd" aria-hidden>/</kbd>}
+      </div>
+      {showList && (
+        <ul className="results-list" role="listbox" id={`${id}-list`}>
+          {results.map((p, i) => (
+            <li
+              key={p.slug}
+              id={`${id}-${p.slug}`}
+              role="option"
+              aria-selected={i === active}
+              className={i === active ? "active" : ""}
+              onMouseEnter={() => setActive(i)}
+              onMouseDown={(e) => {
+                e.preventDefault();
+                go(p.slug);
+              }}
+            >
+              <Icon page={p} size={16} />
+              <span>
+                <strong>{p.label}</strong>
+                <small>{p.description.split(". ")[0]}</small>
+              </span>
+            </li>
+          ))}
+          {results.length === 0 && <li className="empty">{t("searchEmpty", { q: q.trim() })}</li>}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+function Header({ home }: { home: boolean }) {
   const t = useT();
   return (
     <header className="top">
@@ -70,6 +185,7 @@ function Header() {
         <Logo />
         <span>{BRAND}</span>
       </Link>
+      {!home && <SearchBox variant="header" />}
       <span className="badge">🔒 {t("privacy")}</span>
       <LangContext.Consumer>
         {({ lang, setLang }) => (
@@ -111,6 +227,7 @@ function Home() {
       <section className="hero">
         <h1>{HOME.h1}</h1>
         <p>{HOME.lead}</p>
+        <SearchBox variant="hero" />
       </section>
       {ORDER.map((cat) => {
         const featured = FEATURED[cat].map((s) => pageBySlug(s)!);
@@ -177,7 +294,7 @@ function ToolPage({ page }: { page: Page }) {
 
       <article className="content">
         <section>
-          <h2>{`How to ${page.h1.charAt(0).toLowerCase()}${page.h1.slice(1)}`}</h2>
+          <h2>{howToHeading(page)}</h2>
           <ol className="steps">
             {page.steps.map((s, i) => (
               <li key={i}>{s}</li>
@@ -222,8 +339,9 @@ function NotFound() {
     <main className="tool">
       <h1>Page not found</h1>
       <p>
-        That address doesn't exist. <Link to="/">See all tools</Link>.
+        That address doesn't exist. Search for the tool you need, or <Link to="/">see all tools</Link>.
       </p>
+      <SearchBox variant="hero" />
     </main>
   );
 }
@@ -279,7 +397,7 @@ export default function App({ path: initialPath }: { path: string }) {
 
   return (
     <LangContext.Provider value={{ lang, setLang }}>
-      <Header />
+      <Header home={path === "/"} />
       {path === "/" ? <Home /> : page ? <ToolPage page={page} /> : <NotFound />}
       <Footer />
     </LangContext.Provider>

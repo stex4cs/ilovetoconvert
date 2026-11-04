@@ -21,6 +21,8 @@ Free PDF, image and document converter that runs entirely in your browser. Files
 
 Those eight tools sit behind 42 landing pages, one per conversion people search for: [HEIC to JPG](https://ilovetoconvert.vercel.app/heic-to-jpg), [PSD to PNG](https://ilovetoconvert.vercel.app/psd-to-png), [TIFF to PDF](https://ilovetoconvert.vercel.app/tiff-to-pdf), [favicon generator](https://ilovetoconvert.vercel.app/favicon-generator) and so on. Each page opens its tool with the right preset.
 
+A search box on every page finds the right tool from the words people actually type: "jpeg to pdf", "iphone photo", "photoshop", "combine pdfs", "shrink image", and a few Serbian ones. Press `/` or `Ctrl/⌘ K` to jump to it.
+
 ![HEIC to JPG page](docs/tool.png)
 
 ## How it works

@@ -4,6 +4,10 @@ export type Lang = "sr" | "en";
 
 const sr = {
   tagline: "Besplatni alati za PDF i slike",
+  searchLabel: "Pretraži alate",
+  searchHero: "Šta treba da konvertujete? npr. HEIC u JPG, spoji PDF",
+  searchShort: "Pretraži alate",
+  searchEmpty: "Nema alata za „{q}“. Probajte sa formatom, npr. PDF, JPG ili Word.",
   heroTitle: "PDF i slike, bez instaliranja i bez slanja fajlova",
   heroText:
     "Sve se radi u vašem pregledaču. Fajlovi ne odlaze ni na jedan server, nema registracije, nema vodenog žiga, nema ograničenja.",
@@ -97,6 +101,10 @@ type Dict = typeof sr;
 
 const en: Dict = {
   tagline: "Free PDF and image tools",
+  searchLabel: "Search tools",
+  searchHero: "What do you need to convert? e.g. HEIC to JPG, merge PDF",
+  searchShort: "Search tools",
+  searchEmpty: "No tool for “{q}” yet. Try a format, like PDF, JPG or Word.",
   heroTitle: "PDFs and images, nothing to install and nothing uploaded",
   heroText:
     "Everything runs in your browser. Your files never reach a server: no sign-up, no watermark, no limits.",

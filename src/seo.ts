@@ -3,7 +3,7 @@
  * Graph, Twitter and JSON-LD. Built from the same data on the server (into
  * the prerendered HTML) and in the browser (on client-side navigation).
  */
-import { BRAND, HOME, PAGES, pageBySlug, type Page } from "./content/pages";
+import { BRAND, HOME, PAGES, howToHeading, pageBySlug, type Page } from "./content/pages";
 
 /** Set VITE_SITE_URL when the domain changes (ilovetoconvert.com later). */
 export const SITE_URL = (import.meta.env.VITE_SITE_URL || "https://ilovetoconvert.vercel.app").replace(/\/$/, "");
@@ -83,7 +83,7 @@ export function headFor(path: string): Head {
       {
         "@context": "https://schema.org",
         "@type": "HowTo",
-        name: page.h1,
+        name: howToHeading(page),
         step: page.steps.map((s, i) => ({ "@type": "HowToStep", position: i + 1, text: s })),
       },
     ],
