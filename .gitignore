@@ -9,3 +9,7 @@ public/pdfjs/
 # e2e fixtures and outputs are generated
 e2e/.fixtures/
 e2e/.out/
+
+# tesseract.js language cache when run under Node
+*.traineddata
+e2e/.*.mjs
