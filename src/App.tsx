@@ -204,7 +204,7 @@ function Header({ home }: { home: boolean }) {
 
 const FEATURED: Record<Category, string[]> = {
   pdf: ["pdf-to-word", "compress-pdf", "images-to-pdf", "merge-pdf", "split-pdf", "pdf-to-jpg"],
-  document: ["word-to-pdf", "excel-to-pdf", "markdown-to-pdf"],
+  document: ["word-to-pdf", "powerpoint-to-pdf", "excel-to-pdf", "markdown-to-pdf"],
   image: ["heic-to-jpg", "image-converter", "compress-image", "favicon-generator"],
 };
 const ORDER: Category[] = ["pdf", "image", "document"];

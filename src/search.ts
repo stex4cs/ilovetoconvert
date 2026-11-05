@@ -18,6 +18,7 @@ const SYNONYMS: Record<string, string> = {
   docx: "word", doc: "word", msword: "word", document: "word", dokument: "word",
   xls: "excel", xlsx: "excel", spreadsheet: "excel", sheet: "excel", sheets: "excel", tabela: "excel",
   libreoffice: "ods", openoffice: "ods", calc: "ods",
+  ppt: "powerpoint", pptx: "powerpoint", slides: "powerpoint", presentation: "powerpoint", prezentacija: "powerpoint", keynote: "powerpoint",
   md: "markdown", readme: "markdown",
   text: "txt", tekst: "txt",
   icon: "ico", favicon: "ico", ikonica: "ico",

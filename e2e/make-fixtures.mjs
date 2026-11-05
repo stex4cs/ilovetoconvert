@@ -158,6 +158,27 @@ put("old.doc", "not really a doc");
 put("notes.md", "# Meeting notes\n\nAgreed on the **fair** shoot, 2026.\n\n- Filming: 3 days\n- Editing: 5 days\n\n| Item | Price |\n|---|---|\n| Drone | 200 € |\n\n<img src=x onerror=\"alert(1)\">\n");
 put("text.txt", "Plain text.\nČćšžđ ЉУБАВ 123.\n");
 
+/* ---------- PowerPoint ---------- */
+{
+  const { default: PptxGenJS } = await import("pptxgenjs");
+  const pptx = new PptxGenJS();
+  pptx.layout = "LAYOUT_16x9";
+  const s1 = pptx.addSlide();
+  s1.background = { color: "1E3A8A" };
+  s1.addText("Quarterly Review", { x: 0.6, y: 1.8, w: 8.8, h: 1, fontSize: 40, bold: true, color: "FFFFFF" });
+  s1.addText("Prepared for the board · Ђорђе Čačak", { x: 0.6, y: 2.9, w: 8.8, h: 0.6, fontSize: 18, color: "C7D2FE" });
+  const s2 = pptx.addSlide();
+  s2.addText("Highlights", { x: 0.5, y: 0.3, w: 9, h: 0.8, fontSize: 28, bold: true, color: "111111" });
+  s2.addText([{ text: "Revenue up 12%", options: { bullet: true } }, { text: "Two products shipped", options: { bullet: true } }, { text: "Berlin office opened", options: { bullet: true } }], { x: 0.5, y: 1.3, w: 4.5, h: 2.5, fontSize: 18 });
+  s2.addImage({ path: path.join(FX, "photo.jpg"), x: 5.4, y: 1.3, w: 4, h: 3 });
+  const s3 = pptx.addSlide();
+  s3.addText("Results by region", { x: 0.5, y: 0.3, w: 9, h: 0.8, fontSize: 28, bold: true });
+  s3.addTable([["Region", "Revenue", "Growth"], ["North", "1200", "12%"], ["South", "950", "8%"]], { x: 0.5, y: 1.3, w: 9, fontSize: 16, border: { type: "solid", pt: 1, color: "999999" } });
+  s3.addShape(pptx.ShapeType.rect, { x: 0.5, y: 3.6, w: 2, h: 1, fill: { color: "F97316" } });
+  await pptx.writeFile({ fileName: path.join(FX, "deck.pptx") });
+  put("old.ppt", "not really a ppt");
+}
+
 /* ---------- spreadsheets ---------- */
 {
   const wb = XLSX.utils.book_new();

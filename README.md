@@ -12,6 +12,7 @@ Free PDF, image and document converter that runs entirely in your browser. Files
 | --- | --- | --- |
 | [Images to PDF](https://ilovetoconvert.com/images-to-pdf) | JPG, PNG, WebP, **HEIC** (iPhone), **multi-page TIFF**, **PSD**, **SVG**, **AVIF**, GIF, BMP, ICO | One PDF in the order you choose; A4, Letter or image-sized pages; automatic orientation |
 | [Word to PDF](https://ilovetoconvert.com/word-to-pdf) | .docx, **Markdown**, plain text | PDF with real, selectable text, headers, footers, tables and images |
+| [PowerPoint to PDF](https://ilovetoconvert.com/powerpoint-to-pdf) | .pptx | One slide per page at the slide's size; our own renderer: theme colours/fonts, layout and master placeholders, bullets and levels, shapes, pictures, tables, groups, backgrounds |
 | [Excel to PDF](https://ilovetoconvert.com/excel-to-pdf) | .xlsx, .xls, **.ods**, **CSV** | PDF with every sheet, landscape or portrait |
 | [Merge PDF](https://ilovetoconvert.com/merge-pdf) | PDFs | One PDF |
 | [Split PDF](https://ilovetoconvert.com/split-pdf) | PDF + ranges like `1-3, 5, 8-` | One PDF per page, chosen pages, or the PDF minus pages you delete |
@@ -24,7 +25,7 @@ Free PDF, image and document converter that runs entirely in your browser. Files
 | [Protect / unlock PDF](https://ilovetoconvert.com/protect-pdf) | PDF + password | AES-256 encryption with qpdf (WebAssembly); unlock with the password; [repair](https://ilovetoconvert.com/repair-pdf) broken cross-reference tables |
 | [Image converter](https://ilovetoconvert.com/image-converter) | everything above | JPG, PNG, WebP, or an **ICO favicon** with 16 to 256 px inside |
 
-Those tools sit behind 51 landing pages, one per conversion people search for: [HEIC to JPG](https://ilovetoconvert.com/heic-to-jpg), [PSD to PNG](https://ilovetoconvert.com/psd-to-png), [TIFF to PDF](https://ilovetoconvert.com/tiff-to-pdf), [favicon generator](https://ilovetoconvert.com/favicon-generator) and so on. Each page opens its tool with the right preset.
+Those tools sit behind 52 landing pages, one per conversion people search for: [HEIC to JPG](https://ilovetoconvert.com/heic-to-jpg), [PSD to PNG](https://ilovetoconvert.com/psd-to-png), [TIFF to PDF](https://ilovetoconvert.com/tiff-to-pdf), [favicon generator](https://ilovetoconvert.com/favicon-generator) and so on. Each page opens its tool with the right preset.
 
 A search box on every page finds the right tool from the words people actually type: "jpeg to pdf", "iphone photo", "photoshop", "combine pdfs", "shrink image", and a few Serbian ones. Press `/` or `Ctrl/⌘ K` to jump to it.
 

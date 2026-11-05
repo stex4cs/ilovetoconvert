@@ -10,7 +10,7 @@ export const BRAND = "ilovetoconvert";
 export type ToolId =
   | "images-to-pdf" | "word-to-pdf" | "excel-to-pdf" | "merge-pdf"
   | "split-pdf" | "rotate-pdf" | "pdf-to-images" | "convert-images" | "pdf-to-word"
-  | "compress-pdf" | "page-numbers" | "watermark-pdf" | "qpdf";
+  | "compress-pdf" | "page-numbers" | "watermark-pdf" | "qpdf" | "ppt-to-pdf";
 
 export type Preset = {
   type?: "image/jpeg" | "image/png" | "image/webp" | "image/x-icon";
@@ -344,6 +344,31 @@ const PAGES_RAW: Page[] = [
     steps: ["Drop your .txt file into the box above.", "Check the preview.", "Click Save as PDF and choose 'Save as PDF' in the print window."],
     faq: [PRIVACY_FAQ, FREE_FAQ],
     related: ["markdown-to-pdf", "word-to-pdf"],
+  },
+  {
+    slug: "powerpoint-to-pdf",
+    tool: "ppt-to-pdf",
+    category: "document",
+    label: "PowerPoint to PDF",
+    title: `PowerPoint to PDF: Convert PPTX Slides to PDF Free | ${BRAND}`,
+    description: "Convert a PowerPoint presentation to PDF, one slide per page at the slide's own size, text kept as text. Free, in your browser, nothing uploaded.",
+    h1: "PowerPoint to PDF",
+    lead: "Turn a .pptx presentation into a PDF with one slide per page, at the slide's own size, ready to send or print.",
+    about: {
+      heading: "Why send slides as PDF",
+      body: [
+        "A presentation opened on another computer can look different: missing fonts, moved text, animations that hide content. A PDF looks the same everywhere and opens on any phone without PowerPoint.",
+        "Every slide is drawn in your browser, then saved through its print engine, so titles and body text stay real text you can search and copy.",
+      ],
+    },
+    steps: ["Drop your .pptx file into the box above and check the preview.", "Click Save as PDF. Your browser's print window opens.", "Choose 'Save as PDF' as the printer and save."],
+    faq: [
+      { q: "Can I convert an old .ppt file?", a: "Browsers can't read the old binary .ppt format. Open it in PowerPoint, Keynote, Google Slides or LibreOffice Impress, save it as .pptx, then convert it here." },
+      { q: "What about animations and videos?", a: "A PDF is static: each slide is saved as it looks once all its content is shown. Videos appear as their poster frame, if the slide has one." },
+      { q: "Will my fonts look the same?", a: "Common fonts are matched by the browser; a font your computer doesn't have is replaced by a similar one." },
+      PRIVACY_FAQ,
+    ],
+    related: ["word-to-pdf", "excel-to-pdf", "merge-pdf", "compress-pdf"],
   },
   {
     slug: "excel-to-pdf",

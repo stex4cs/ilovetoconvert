@@ -165,6 +165,27 @@ if (suites.has("core")) {
     ok(`${file} → PDF (print)`, pages >= 1 && title === file.replace(/\.[^.]+$/, ""), `pages=${pages} title=${title}`);
     await page.close();
   }
+  for (const [file, slides, w, h] of [["deck.pptx", 3, 720, 405], ["placeholders.pptx", 4, 720, 540]]) {
+    const src = has(file) ? file : `../static/${file}`;
+    const { page } = await open("powerpoint-to-pdf");
+    await upload(page, [src]);
+    await page.waitForFunction(() => !document.querySelector("button.primary")?.disabled || document.querySelector(".error"), { timeout: 60000 });
+    await page.evaluate(() => (window.print = () => {}));
+    await page.click("button.primary");
+    const pdf = Buffer.from(await page.pdf({ preferCSSPageSize: true, printBackground: true }));
+    fs.writeFileSync(path.join(OUT, file + ".pdf"), pdf);
+    const doc = await PDFDocument.load(pdf);
+    const pg = doc.getPage(0);
+    ok(`${file} → PDF, one slide per page`, doc.getPageCount() === slides && Math.abs(pg.getWidth() - w) < 2 && Math.abs(pg.getHeight() - h) < 2, `pages=${doc.getPageCount()} size=${Math.round(pg.getWidth())}x${Math.round(pg.getHeight())}`);
+    await page.close();
+  }
+  {
+    const { page } = await open("powerpoint-to-pdf");
+    await upload(page, ["old.ppt"]);
+    const err = await page.waitForSelector(".error").then((e) => e.evaluate((x) => x.textContent));
+    ok(".ppt is explained", /pptx/i.test(err));
+    await page.close();
+  }
   {
     const { page } = await open("word-to-pdf");
     await upload(page, ["old.doc"]);

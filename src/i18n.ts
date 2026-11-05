@@ -5,6 +5,8 @@ export type Lang = "sr" | "en";
 const sr = {
   tagline: "Besplatni alati za PDF i slike",
   searchLabel: "Pretraži alate",
+  pptUnsupported: "Ova prezentacija ima elemente koji se ovde ne crtaju ({what}); ti delovi slajdova biće prazni.",
+  t_ppt_old: "Stari format .ppt pregledač ne ume da otvori. Sačuvajte prezentaciju kao .pptx (PowerPoint, Keynote, Google Slides ili LibreOffice), pa je ubacite ovde.",
   t_protect_action: "Zaključaj PDF",
   t_unlock_action: "Otključaj PDF",
   t_repair_action: "Popravi PDF",
@@ -152,6 +154,8 @@ type Dict = typeof sr;
 const en: Dict = {
   tagline: "Free PDF and image tools",
   searchLabel: "Search tools",
+  pptUnsupported: "This presentation has elements that aren't drawn here ({what}); those parts of the slides will be empty.",
+  t_ppt_old: "Browsers can't open the old .ppt format. Save the presentation as .pptx (PowerPoint, Keynote, Google Slides or LibreOffice), then drop it here.",
   t_protect_action: "Protect PDF",
   t_unlock_action: "Unlock PDF",
   t_repair_action: "Repair PDF",
