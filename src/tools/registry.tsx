@@ -17,6 +17,7 @@ export const TOOL_COMPONENTS: Record<ToolId, ToolComponent> = {
   "compress-pdf": lazy(() => import("./CompressPdf")),
   "page-numbers": lazy(() => import("./PageNumbers")),
   "watermark-pdf": lazy(() => import("./WatermarkPdf")),
+  qpdf: lazy(() => import("./QpdfTool")),
 };
 
 export const TOOL_STYLE: Record<ToolId, { icon: string; color: string }> = {
@@ -32,4 +33,5 @@ export const TOOL_STYLE: Record<ToolId, { icon: string; color: string }> = {
   "compress-pdf": { icon: "M12 3v6m0 0-3-3m3 3 3-3 M12 21v-6m0 0-3 3m3-3 3 3 M4 12h16", color: "#0d9488" },
   "page-numbers": { icon: "M7 3h10v18H7z M10 17h4 M12 7v5 M10.5 8.5 12 7", color: "#a16207" },
   "watermark-pdf": { icon: "M7 3h10v18H7z M9 15l6-6 M9.5 10.5h0 M14.5 14.5h0", color: "#be185d" },
+  qpdf: { icon: "M6 11h12v10H6z M8.5 11V8a3.5 3.5 0 0 1 7 0v3 M12 15v2", color: "#475569" },
 };

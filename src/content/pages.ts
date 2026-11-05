@@ -10,7 +10,7 @@ export const BRAND = "ilovetoconvert";
 export type ToolId =
   | "images-to-pdf" | "word-to-pdf" | "excel-to-pdf" | "merge-pdf"
   | "split-pdf" | "rotate-pdf" | "pdf-to-images" | "convert-images" | "pdf-to-word"
-  | "compress-pdf" | "page-numbers" | "watermark-pdf";
+  | "compress-pdf" | "page-numbers" | "watermark-pdf" | "qpdf";
 
 export type Preset = {
   type?: "image/jpeg" | "image/png" | "image/webp" | "image/x-icon";
@@ -18,6 +18,7 @@ export type Preset = {
   maxSide?: number;
   mode?: "ranges" | "each" | "delete";
   target?: "docx" | "txt" | "images";
+  qpdf?: "protect" | "unlock" | "repair";
 };
 
 export type Category = "pdf" | "image" | "document";
@@ -572,6 +573,76 @@ const PAGES_RAW: Page[] = [
     related: ["add-page-numbers-to-pdf", "merge-pdf", "compress-pdf"],
   },
   {
+    slug: "protect-pdf",
+    tool: "qpdf",
+    preset: { qpdf: "protect" },
+    category: "pdf",
+    label: "Protect PDF",
+    title: `Protect PDF With a Password: AES-256, Free | ${BRAND}`,
+    description: "Lock a PDF with a password using AES-256 encryption, the strongest the PDF format offers. Free, in your browser, the file and password never leave your device.",
+    h1: "Protect a PDF with a password",
+    lead: "Lock a PDF so it only opens with your password, using AES-256 encryption.",
+    about: {
+      heading: "Real encryption, done on your device",
+      body: [
+        "The PDF is encrypted with AES-256, the strongest method the PDF standard defines, by qpdf, the open-source tool many professional PDF programs rely on. It runs here in your browser, so neither the file nor the password is sent anywhere.",
+        "Every PDF reader asks for the password before showing anything: Acrobat, Preview, Chrome, Edge and phone viewers.",
+      ],
+    },
+    steps: ["Drop your PDF into the box above.", "Type a password twice.", "Click Protect PDF and download the locked file."],
+    faq: [
+      { q: "What if I forget the password?", a: "There's no way to recover it, here or anywhere else; that's what makes the encryption worth having. Keep it in a password manager." },
+      { q: "How strong should the password be?", a: "Encryption is only as strong as the password. Use at least 10 characters, or a few unrelated words." },
+      PRIVACY_FAQ,
+    ],
+    related: ["unlock-pdf", "watermark-pdf", "compress-pdf"],
+  },
+  {
+    slug: "unlock-pdf",
+    tool: "qpdf",
+    preset: { qpdf: "unlock" },
+    category: "pdf",
+    label: "Unlock PDF",
+    title: `Unlock PDF: Remove a PDF Password You Know, Free | ${BRAND}`,
+    description: "Remove the password and restrictions from a PDF you're allowed to open, so it opens and prints without asking. Free, in your browser, nothing uploaded.",
+    h1: "Unlock a PDF",
+    lead: "Remove the password from a PDF you can open, so it no longer asks for it, and lift printing and copying restrictions.",
+    about: {
+      heading: "For your own files",
+      body: [
+        "Bank statements, payslips and scans from office copiers often come password-protected. If you know the password, this saves an unlocked copy so you don't have to type it every time.",
+        "PDFs that open without a password but block printing or copying can be unlocked with the password field left empty. This doesn't crack passwords: without the right password a protected PDF stays locked.",
+      ],
+    },
+    steps: ["Drop the protected PDF into the box above.", "Type its password (leave empty if it opens without one).", "Click Unlock PDF and download the unlocked copy."],
+    faq: [
+      { q: "Can it open a PDF if I don't know the password?", a: "No. It removes protection you're already able to get past, it doesn't break it." },
+      PRIVACY_FAQ,
+    ],
+    related: ["protect-pdf", "merge-pdf", "compress-pdf"],
+  },
+  {
+    slug: "repair-pdf",
+    tool: "qpdf",
+    preset: { qpdf: "repair" },
+    category: "pdf",
+    label: "Repair PDF",
+    title: `Repair PDF: Fix Damaged or Corrupted PDF Files, Free | ${BRAND}`,
+    description: "Try to fix a PDF that won't open or shows errors, by rebuilding its internal structure. Free, in your browser, nothing uploaded.",
+    h1: "Repair a damaged PDF",
+    lead: "Rebuild the internal structure of a PDF that won't open or shows errors about a damaged file.",
+    about: {
+      heading: "What can be fixed",
+      body: [
+        "Most damaged PDFs have a broken index (the cross-reference table) rather than broken content, usually from a buggy export or a file edited by a tool that got the offsets wrong. The repair reads every object from the start of the file instead of trusting the index, and writes a clean new PDF around them.",
+        "A file that was cut off before its end (an interrupted download) usually lost the part that ties the pages together; no tool can bring that back, and the repair will tell you so.",
+      ],
+    },
+    steps: ["Drop the damaged PDF into the box above.", "Click Repair PDF.", "Download the rebuilt file."],
+    faq: [PRIVACY_FAQ, FREE_FAQ],
+    related: ["compress-pdf", "unlock-pdf", "merge-pdf"],
+  },
+  {
     slug: "pdf-to-word",
     tool: "pdf-to-word",
     preset: { target: "docx" },
@@ -668,7 +739,7 @@ const SPECIAL_HOWTO: Record<string, string> = {
   "favicon-generator": "How to make a favicon.ico",
   "image-converter": "How to convert images",
 };
-const VERBS = /^(Convert|Merge|Split|Extract|Delete|Rotate|Compress|Resize)\b/;
+const VERBS = /^(Convert|Merge|Split|Extract|Delete|Rotate|Compress|Resize|Protect|Unlock|Repair|Add|Sign|Organize|Scan|Remove|Crop|Flip|Make)\b/;
 
 /** "How to convert Word to PDF", "How to merge PDF files": the heading and HowTo name. */
 export function howToHeading(page: Page): string {

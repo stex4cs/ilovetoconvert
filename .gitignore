@@ -5,3 +5,7 @@ dist-server/
 .DS_Store
 .env*
 public/pdfjs/
+
+# e2e fixtures and outputs are generated
+e2e/.fixtures/
+e2e/.out/

@@ -208,3 +208,17 @@ export async function compressPdf(data: ArrayBuffer, level: CompressLevel, onIma
   const bytes = await doc.save({ useObjectStreams: true });
   return { bytes, before, after: bytes.length, images: images.length, recompressed };
 }
+
+/**
+ * Rewrites a damaged PDF with a fresh cross-reference table. pdf-lib reads
+ * the file object by object from the start rather than trusting the index,
+ * so a wrong startxref or a broken xref table (the usual damage from bad
+ * exports and patched files) is rebuilt. A file cut off before its
+ * document catalog can't be recovered by any tool.
+ */
+export async function repairPdf(data: ArrayBuffer): Promise<{ bytes: Uint8Array; pages: number }> {
+  const doc = await PDFDocument.load(data, { ignoreEncryption: true, throwOnInvalidObject: false, updateMetadata: false });
+  const pages = doc.getPageCount();
+  if (!pages) throw new Error("no pages");
+  return { bytes: await doc.save({ useObjectStreams: true }), pages };
+}

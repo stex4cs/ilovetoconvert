@@ -21,9 +21,10 @@ Free PDF, image and document converter that runs entirely in your browser. Files
 | [Compress PDF](https://ilovetoconvert.com/compress-pdf) | PDF | Smaller PDF: photos re-encoded, text and vectors untouched |
 | [Page numbers](https://ilovetoconvert.com/add-page-numbers-to-pdf) | PDF | Numbers in any corner, 1 / 1 of N / Page 1 of N, skip the cover |
 | [Watermark PDF](https://ilovetoconvert.com/watermark-pdf) | PDF + text or logo | Diagonal or tiled stamp, any script, chosen opacity |
+| [Protect / unlock PDF](https://ilovetoconvert.com/protect-pdf) | PDF + password | AES-256 encryption with qpdf (WebAssembly); unlock with the password; [repair](https://ilovetoconvert.com/repair-pdf) broken cross-reference tables |
 | [Image converter](https://ilovetoconvert.com/image-converter) | everything above | JPG, PNG, WebP, or an **ICO favicon** with 16 to 256 px inside |
 
-Those tools sit behind 48 landing pages, one per conversion people search for: [HEIC to JPG](https://ilovetoconvert.com/heic-to-jpg), [PSD to PNG](https://ilovetoconvert.com/psd-to-png), [TIFF to PDF](https://ilovetoconvert.com/tiff-to-pdf), [favicon generator](https://ilovetoconvert.com/favicon-generator) and so on. Each page opens its tool with the right preset.
+Those tools sit behind 51 landing pages, one per conversion people search for: [HEIC to JPG](https://ilovetoconvert.com/heic-to-jpg), [PSD to PNG](https://ilovetoconvert.com/psd-to-png), [TIFF to PDF](https://ilovetoconvert.com/tiff-to-pdf), [favicon generator](https://ilovetoconvert.com/favicon-generator) and so on. Each page opens its tool with the right preset.
 
 A search box on every page finds the right tool from the words people actually type: "jpeg to pdf", "iphone photo", "photoshop", "combine pdfs", "shrink image", and a few Serbian ones. Press `/` or `Ctrl/⌘ K` to jump to it.
 
@@ -48,7 +49,8 @@ Canonical URLs, Open Graph and the sitemap use `https://ilovetoconvert.com`; set
 ```bash
 npm install
 npm run dev       # http://localhost:5173 (client-rendered)
-npm test          # unit tests: page ranges, layout, PDF operations, ICO
+npm test          # unit tests: page ranges, layout, PDF reconstruction, search, ICO
+npm run e2e       # every tool in headless Chrome against generated fixtures (macOS for HEIC/TIFF/PSD)
 npm run build     # type-check, client + SSR build, prerender into dist/
 ```
 

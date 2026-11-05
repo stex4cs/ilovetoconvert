@@ -10,5 +10,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+        env:
+          PUPPETEER_SKIP_DOWNLOAD: "true"
       - run: npm test
       - run: npm run build

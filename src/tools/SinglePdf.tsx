@@ -6,7 +6,8 @@ import { DropZone, ErrorNote, FileList } from "../components/ui";
 const isPdf = (f: File) => f.type === "application/pdf" || /\.pdf$/i.test(f.name);
 
 /** One PDF, read once; renders the drop zone until a file is chosen. */
-export function useSinglePdf(onChange?: () => void) {
+/** `lenient`: accept files pdf-lib can't read (encrypted, damaged) instead of rejecting them. */
+export function useSinglePdf(onChange?: () => void, lenient = false) {
   const t = useT();
   const [file, setFile] = useState<File | null>(null);
   const [data, setData] = useState<ArrayBuffer | null>(null);
@@ -18,14 +19,18 @@ export function useSinglePdf(onChange?: () => void) {
     onChange?.();
     if (!f) return;
     setLoadError(null);
+    const buf = await f.arrayBuffer();
     try {
-      const buf = await f.arrayBuffer();
       setPages(await pageCount(buf.slice(0)));
-      setData(buf);
-      setFile(f);
     } catch {
-      setLoadError(t("error"));
+      if (!lenient) {
+        setLoadError(t("error"));
+        return;
+      }
+      setPages(0);
     }
+    setData(buf);
+    setFile(f);
   };
 
   const clear = () => {
@@ -36,7 +41,7 @@ export function useSinglePdf(onChange?: () => void) {
   };
 
   const picker = file ? (
-    <FileList files={[file]} onChange={clear} meta={() => `${pages} ${t("pages")}`} />
+    <FileList files={[file]} onChange={clear} meta={() => (pages ? `${pages} ${t("pages")}` : undefined)} />
   ) : (
     <>
       <DropZone accept="application/pdf,.pdf" label="PDF" onFiles={choose} />
