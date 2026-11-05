@@ -11,7 +11,7 @@ export type ToolId =
   | "images-to-pdf" | "word-to-pdf" | "excel-to-pdf" | "merge-pdf"
   | "split-pdf" | "rotate-pdf" | "pdf-to-images" | "convert-images" | "pdf-to-word"
   | "compress-pdf" | "page-numbers" | "watermark-pdf" | "qpdf" | "ppt-to-pdf"
-  | "ocr";
+  | "ocr" | "organize-pdf" | "sign-pdf";
 
 export type Preset = {
   type?: "image/jpeg" | "image/png" | "image/webp" | "image/x-icon";
@@ -24,6 +24,8 @@ export type Preset = {
   targetKB?: number;
   /** PNG: reduce to this many colours (0 = lossless). */
   pngColors?: number;
+  /** Sign PDF: which panel is open first. */
+  start?: "signature" | "text";
 };
 
 export type Category = "pdf" | "image" | "document";
@@ -754,6 +756,107 @@ const PAGES_RAW: Page[] = [
   },
 ];
 
+PAGES_RAW.push(
+  {
+    slug: "organize-pdf",
+    tool: "organize-pdf",
+    category: "pdf",
+    label: "Organize PDF",
+    title: `Organize PDF: Reorder, Rotate and Delete Pages, Free | ${BRAND}`,
+    description: "See every page as a thumbnail, drag pages into order, rotate or delete them, and combine pages from several PDFs. Free, in your browser, nothing uploaded.",
+    h1: "Organize PDF pages",
+    lead: "See every page as a thumbnail and put the PDF in order: drag pages around, turn the sideways ones, delete what you don't need, and mix in pages from other PDFs.",
+    about: {
+      heading: "Every page in front of you",
+      body: [
+        "Splitting by page numbers works when you know them. When you don't, it's easier to look: every page appears as a thumbnail, so you can spot the blank scan, the upside-down page and the one in the wrong place at a glance.",
+        "Add several PDFs and their pages land in one grid, marked A, B, C, so you can interleave them freely, for example putting signed pages back into a contract. The pages are copied as they are, so text stays text and nothing is re-compressed.",
+      ],
+    },
+    steps: ["Drop one or more PDFs into the box above.", "Drag the thumbnails into order; rotate or delete pages with the buttons under each one.", "Click Save PDF and download the result."],
+    faq: [
+      { q: "Can I move pages on a phone?", a: "Yes. Dragging works with a mouse; on a touch screen use the arrow buttons under each page." },
+      { q: "Does it lower the quality?", a: "No. The pages are copied exactly as they are; only their order and rotation change." },
+      PRIVACY_FAQ,
+      FREE_FAQ,
+    ],
+    related: ["merge-pdf", "split-pdf", "rotate-pdf"],
+  },
+  {
+    slug: "reorder-pdf-pages",
+    tool: "organize-pdf",
+    category: "pdf",
+    label: "Reorder PDF pages",
+    title: `Reorder PDF Pages: Drag and Drop to Rearrange, Free | ${BRAND}`,
+    description: "Rearrange the pages of a PDF by dragging thumbnails into the right order. Rotate or remove pages while you're at it. Free, in your browser, nothing uploaded.",
+    h1: "Reorder PDF pages",
+    lead: "Put the pages of a PDF in the right order by dragging their thumbnails, the way you would shuffle sheets of paper on a desk.",
+    about: {
+      heading: "Fix the order a scanner got wrong",
+      body: [
+        "Double-sided scans often come out as all front pages and then all back pages. Reverse order and drag-and-drop make short work of it, and pages scanned upside down turn with one click.",
+      ],
+    },
+    steps: ["Drop your PDF into the box above.", "Drag the pages into the order you want.", "Click Save PDF and download."],
+    faq: [{ q: "Can I combine pages from two PDFs?", a: "Yes. Add the second PDF with Add more and drag its pages wherever they belong." }, PRIVACY_FAQ, FREE_FAQ],
+    related: ["organize-pdf", "merge-pdf", "delete-pdf-pages"],
+  },
+);
+
+PAGES_RAW.push(
+  {
+    slug: "sign-pdf",
+    tool: "sign-pdf",
+    preset: { start: "signature" },
+    category: "pdf",
+    label: "Sign PDF",
+    title: `Sign PDF: Add Your Signature to a PDF, Free | ${BRAND}`,
+    description: "Draw, type or upload your signature and place it on any page of a PDF. Add a date or your name too. Free, no account, in your browser, nothing uploaded.",
+    h1: "Sign a PDF",
+    lead: "Put your signature on a PDF without printing it: draw it with a mouse or finger, type it, or use a photo of your signature on paper, then drag it into place.",
+    about: {
+      heading: "Sign without printing and scanning",
+      body: [
+        "Draw your signature on the pad, type your name in a handwriting font, or upload a photo of your signature on white paper: the paper is removed automatically and only the ink is kept.",
+        "Drag the signature anywhere on any page, resize it from the corner and add as many as you need, plus the date or your printed name as real, selectable text. Your document and signature never leave your device.",
+      ],
+    },
+    steps: ["Drop your PDF into the box above.", "Draw, type or upload your signature and click Place on page.", "Drag it into position, then click Save signed PDF."],
+    faq: [
+      { q: "Is this a legally binding signature?", a: "It's a simple electronic signature: a picture of your signature on the document, which is what most everyday agreements, forms and HR paperwork ask for. It isn't a certificate-based digital signature (like a qualified e-signature), which some legal and government documents require." },
+      { q: "Can I sign on my phone?", a: "Yes. Draw with your finger, then drag the signature into place with your finger too." },
+      PRIVACY_FAQ,
+      FREE_FAQ,
+    ],
+    related: ["add-text-to-pdf", "merge-pdf", "protect-pdf"],
+  },
+  {
+    slug: "add-text-to-pdf",
+    tool: "sign-pdf",
+    preset: { start: "text" },
+    category: "pdf",
+    label: "Add text to PDF",
+    title: `Add Text to PDF: Type on a PDF Free, No Upload | ${BRAND}`,
+    description: "Type text anywhere on a PDF: fill in a name, a date, a note or a form field that isn't fillable. Real, selectable text in any language. Free, nothing uploaded.",
+    h1: "Add text to a PDF",
+    lead: "Type on a PDF: fill in a name, date or answer on a form that isn't fillable, or add a note, then drag the text exactly where it belongs.",
+    about: {
+      heading: "Real text, in any language",
+      body: [
+        "The text is written into the PDF with a real font, so it stays sharp at any zoom and can be selected, copied and searched. Serbian, Cyrillic, Greek and accented letters all work.",
+        "Pick the size and colour, drag the text into place and resize it from the corner. Need a signature as well? Switch to Signature in the same tool.",
+      ],
+    },
+    steps: ["Drop your PDF into the box above.", "Type your text and click Place text.", "Drag it into position, then click Save signed PDF."],
+    faq: [
+      { q: "Can I edit the text that's already in the PDF?", a: "No. This adds new text on top of the page; the original content isn't changed." },
+      PRIVACY_FAQ,
+      FREE_FAQ,
+    ],
+    related: ["sign-pdf", "watermark-pdf", "add-page-numbers-to-pdf"],
+  },
+);
+
 /* ---------- OCR ---------- */
 
 const OCR_FAQ = [
@@ -979,6 +1082,10 @@ export const PAGES = PAGES_RAW;
 const SPECIAL_HOWTO: Record<string, string> = {
   "favicon-generator": "How to make a favicon.ico",
   "image-converter": "How to convert images",
+  "sign-pdf": "How to sign a PDF",
+  "add-text-to-pdf": "How to add text to a PDF",
+  "organize-pdf": "How to organize the pages of a PDF",
+  "reorder-pdf-pages": "How to reorder the pages of a PDF",
   "image-to-text": "How to extract text from an image",
   "jpg-to-text": "How to extract text from a JPG photo",
   "ocr-pdf": "How to make a scanned PDF searchable",

@@ -267,3 +267,33 @@ main { max-width: 1080px; width: 100%; margin: 0 auto; padding: 8px 20px 48px; f
   .print-area .pptx-slide:last-child { break-after: auto; }
   .sheets tr { break-inside: avoid; }
 }
+
+/* Organize PDF */
+.org-bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; font-size: 14px; color: var(--muted); }
+.org-bar > span:last-child { display: flex; gap: 8px; }
+.org-grid { list-style: none; margin: 0 0 16px; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+.org-card { display: grid; gap: 6px; padding: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; cursor: grab; user-select: none; }
+.org-card.dragging { opacity: 0.4; }
+.org-thumb { position: relative; aspect-ratio: 1; background: var(--bg); border-radius: 8px; overflow: hidden; }
+/* absolutely centred so max-height resolves and rotation turns about the middle */
+.org-thumb img, .org-blank { position: absolute; inset: 0; margin: auto; max-width: calc(100% - 14px); max-height: calc(100% - 14px); background: #fff; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25); transition: transform 0.2s; }
+.org-blank { width: 60%; height: auto; }
+.org-label { text-align: center; font-size: 12px; font-weight: 650; color: var(--muted); font-variant-numeric: tabular-nums; }
+.org-tools { display: flex; justify-content: center; gap: 2px; }
+.org-tools .icon { width: 26px; height: 26px; font-size: 14px; padding: 0; }
+
+/* Sign PDF / add text */
+@font-face { font-family: "Liberation Sans PDF"; src: url(/pdfjs/standard_fonts/LiberationSans-Regular.ttf) format("truetype"); font-display: swap; }
+.sign-panel { display: grid; gap: 12px; }
+.sign-pad { display: block; width: 100%; aspect-ratio: 3 / 1; background: #fff; border: 1px dashed var(--muted); border-radius: 10px; touch-action: none; cursor: crosshair; }
+.sign-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; color: var(--muted); }
+.sign-row > span { display: flex; gap: 8px; }
+.sign-typed { background: #fff; border-radius: 10px; padding: 6px 18px; font-size: 46px; line-height: 1.5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sign-nav { display: flex; align-items: center; justify-content: center; gap: 12px; font-size: 14px; color: var(--muted); margin: 8px 0; }
+.sign-stage { position: relative; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: #fff; user-select: none; }
+.sign-stage canvas { display: block; width: 100%; height: auto; }
+.stamp { position: absolute; cursor: move; touch-action: none; outline: 1.5px dashed var(--accent); outline-offset: 3px; }
+.stamp img { display: block; width: 100%; pointer-events: none; }
+.stamp-text { display: block; white-space: pre; line-height: 1; font-family: "Liberation Sans PDF", Arial, sans-serif; }
+.stamp-x { position: absolute; top: -11px; right: -30px; width: 22px; height: 22px; padding: 0; border-radius: 50%; border: 0; background: var(--danger); color: #fff; font-size: 14px; line-height: 22px; }
+.stamp-resize { position: absolute; right: -12px; bottom: -14px; width: 16px; height: 16px; border-radius: 50%; background: var(--accent); border: 2px solid #fff; cursor: nwse-resize; touch-action: none; }

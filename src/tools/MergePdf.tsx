@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useT } from "../i18n";
+import { usePages, useT } from "../i18n";
 import { mergePdfs, pageCount, pdfBlob } from "../lib/pdf";
 import { baseName } from "../lib/pages";
 import { Action, DropZone, ErrorNote, FileList, Results } from "../components/ui";
@@ -10,6 +10,7 @@ const isPdf = (f: File) => f.type === "application/pdf" || /\.pdf$/i.test(f.name
 
 export default function MergePdf() {
   const t = useT();
+  const pagesLabel = usePages();
   const [files, setFiles] = useState<File[]>([]);
   const [counts, setCounts] = useState(new Map<File, number>());
   const { busy, error, outputs, run, reset } = useRunner();
@@ -32,7 +33,7 @@ export default function MergePdf() {
   };
   const meta = (f: File) => {
     const n = counts.get(f);
-    return n === undefined ? undefined : n < 0 ? t("error") : `${n} ${t("pages")}`;
+    return n === undefined ? undefined : n < 0 ? t("error") : pagesLabel(n);
   };
 
   return (

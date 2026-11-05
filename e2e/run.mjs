@@ -1,10 +1,10 @@
 // End-to-end checks for every tool, in a real browser.
 // Usage: node e2e/run.mjs [baseUrl] [suite...]   (no baseUrl: serves dist/ itself)
-// Suites: core search word extra qpdf ocr (default: all). Run `node e2e/make-fixtures.mjs` first.
+// Suites: core search word extra qpdf ocr sign (default: all). Run `node e2e/make-fixtures.mjs` first.
 import fs from "node:fs";
 import path from "node:path";
 import puppeteer from "puppeteer";
-import { PDFDocument } from "pdf-lib";
+import { PDFDocument, PDFName } from "pdf-lib";
 import JSZip from "jszip";
 import { serve } from "./serve.mjs";
 
@@ -13,7 +13,7 @@ const FX = path.join(HERE, ".fixtures");
 const OUT = path.join(HERE, ".out");
 const args = process.argv.slice(2);
 let base = args[0]?.startsWith("http") ? args.shift() : null;
-const suites = new Set(args.length ? args : ["core", "search", "word", "extra", "qpdf", "ocr"]);
+const suites = new Set(args.length ? args : ["core", "search", "word", "extra", "qpdf", "ocr", "sign"]);
 let server;
 if (!base) ({ server, url: base } = await serve(path.join(HERE, "..", "dist")));
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -76,6 +76,20 @@ async function pdfText(file) {
   for (let n = 1; n <= doc.numPages; n++) pages.push((await (await doc.getPage(n)).getTextContent()).items.map((i) => i.str).join(" ").replace(/\s+/g, " "));
   await task.destroy();
   return pages;
+}
+/** Text items of page 1 with position and direction as the reader sees the page (0..1, top-left origin). */
+async function visualTextItems(file) {
+  const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
+  const task = pdfjs.getDocument({ data: new Uint8Array(fs.readFileSync(file)), verbosity: 0 });
+  const page = await (await task.promise).getPage(1);
+  const vp = page.getViewport({ scale: 1 });
+  const items = (await page.getTextContent()).items.filter((i) => i.str.trim()).map((i) => {
+    const [x0, y0] = vp.convertToViewportPoint(i.transform[4], i.transform[5]);
+    const [x1, y1] = vp.convertToViewportPoint(i.transform[4] + i.transform[0], i.transform[5] + i.transform[1]);
+    return { str: i.str, x: x0 / vp.width, y: y0 / vp.height, dx: x1 - x0, dy: y1 - y0 };
+  });
+  await task.destroy();
+  return items;
 }
 const hint = (page) => page.$$eval(".hint", (els) => els.map((e) => e.textContent).join(" | "));
 
@@ -342,6 +356,23 @@ if (suites.has("extra")) {
     await page.close();
   }
   {
+    const { page, dir } = await open("organize-pdf");
+    await upload(page, ["a.pdf", "b.pdf"]);
+    await page.waitForFunction(() => document.querySelectorAll(".org-card img").length === 5, { timeout: 30000 });
+    const tap = (i, label) => page.evaluate((i, l) => document.querySelectorAll(".org-card")[i].querySelector(`[aria-label="${l}"]`).click(), i, label);
+    await tap(1, "Delete page"); // A1 A3 B1 B2
+    for (const i of [3, 2, 1]) await tap(i, "Move left"); // B2 A1 A3 B1
+    await tap(0, "Rotate right");
+    await tap(2, "Rotate left");
+    await go(page);
+    const [file] = await downloads(page, dir, 1);
+    const texts = file ? await pdfText(file) : [];
+    const doc = file ? await PDFDocument.load(fs.readFileSync(file)) : null;
+    const rot = doc?.getPages().map((p) => p.getRotation().angle).join(",");
+    ok("organize: delete, reorder, rotate, two PDFs", texts.map((x) => x.trim()).join("|") === "Beta page 2|Alpha page 1|Alpha page 3|Beta page 1" && rot === "90,0,270,0", `${texts.map((x) => x.trim()).join("|")} rot=${rot}`);
+    await page.close();
+  }
+  {
     const { page, dir } = await open("add-page-numbers-to-pdf");
     await upload(page, ["rotated.pdf"]);
     await page.waitForSelector(".options");
@@ -361,6 +392,56 @@ if (suites.has("extra")) {
     await go(page);
     const [file] = await downloads(page, dir, 1);
     ok("watermark, Cyrillic, tiled", file && (await pdfPages(file)) === 1);
+    await page.close();
+  }
+}
+
+/* ---------------- sign / add text ---------------- */
+if (suites.has("sign")) {
+  {
+    const { page, dir } = await open("sign-pdf");
+    await upload(page, ["report.pdf"]);
+    await page.waitForSelector(".sign-pad");
+    const b = await (await page.$(".sign-pad")).boundingBox();
+    await page.mouse.move(b.x + 40, b.y + b.height * 0.7);
+    await page.mouse.down();
+    for (let i = 1; i <= 12; i++) await page.mouse.move(b.x + 40 + i * 30, b.y + b.height * (0.7 - 0.4 * Math.sin(i / 2)), { steps: 3 });
+    await page.mouse.up();
+    await button(page, "Place on page");
+    await page.waitForSelector(".stamp img");
+    await button(page, "Text");
+    await page.click(".sign-panel .field input", { clickCount: 3 });
+    await page.keyboard.type("Petar Petrović, Добар");
+    await button(page, "Place text");
+    await page.waitForSelector(".stamp .stamp-text");
+    // drag the text 60 px right and 40 px down
+    const t = await (await page.$$(".stamp"))[1].boundingBox();
+    await page.mouse.move(t.x + 10, t.y + 5);
+    await page.mouse.down();
+    await page.mouse.move(t.x + 70, t.y + 45, { steps: 5 });
+    await page.mouse.up();
+    await go(page);
+    const [file] = await downloads(page, dir, 1);
+    const text = file ? (await pdfText(file))[0] : "";
+    const doc = file ? await PDFDocument.load(fs.readFileSync(file)) : null;
+    const count = (d) => d?.getPage(0).node.Resources()?.lookup(PDFName.of("XObject"))?.keys().length ?? 0;
+    const xobjects = count(doc), before = count(await PDFDocument.load(fs.readFileSync(path.join(FX, "report.pdf"))));
+    ok("sign: drawn signature + Unicode text", /Petar Petrović, Добар/.test(text) && xobjects === before + 1, `${JSON.stringify(text.slice(-30))} images ${before} → ${xobjects}`);
+    await page.close();
+  }
+  {
+    const { page, dir } = await open("add-text-to-pdf");
+    await upload(page, ["rotated.pdf"]);
+    await page.waitForSelector(".sign-panel .field input");
+    await page.click(".sign-panel .field input", { clickCount: 3 });
+    await page.keyboard.type("TOPLEFT");
+    await button(page, "Place text");
+    await page.waitForSelector(".stamp .stamp-text");
+    await go(page);
+    const [file] = await downloads(page, dir, 1);
+    const item = file ? (await visualTextItems(file)).find((i) => i.str === "TOPLEFT") : null;
+    // placed 8% from the left and top of the page as seen; it must read left to right
+    ok("add text on a rotated page lands upright where placed", !!item && Math.abs(item.x - 0.08) < 0.02 && item.y > 0.08 && item.y < 0.13 && item.dx > 0 && Math.abs(item.dy) < 0.01, JSON.stringify(item));
     await page.close();
   }
 }

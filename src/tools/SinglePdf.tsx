@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useT } from "../i18n";
+import { usePages, useT } from "../i18n";
 import { pageCount } from "../lib/pdf";
 import { DropZone, ErrorNote, FileList } from "../components/ui";
 
@@ -9,6 +9,7 @@ const isPdf = (f: File) => f.type === "application/pdf" || /\.pdf$/i.test(f.name
 /** `lenient`: accept files pdf-lib can't read (encrypted, damaged) instead of rejecting them. */
 export function useSinglePdf(onChange?: () => void, lenient = false) {
   const t = useT();
+  const pagesLabel = usePages();
   const [file, setFile] = useState<File | null>(null);
   const [data, setData] = useState<ArrayBuffer | null>(null);
   const [pages, setPages] = useState(0);
@@ -41,7 +42,7 @@ export function useSinglePdf(onChange?: () => void, lenient = false) {
   };
 
   const picker = file ? (
-    <FileList files={[file]} onChange={clear} meta={() => (pages ? `${pages} ${t("pages")}` : undefined)} />
+    <FileList files={[file]} onChange={clear} meta={() => (pages ? pagesLabel(pages) : undefined)} />
   ) : (
     <>
       <DropZone accept="application/pdf,.pdf" label="PDF" onFiles={choose} />

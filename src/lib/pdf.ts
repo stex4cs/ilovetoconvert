@@ -2,7 +2,7 @@
  * PDF operations on pdf-lib. Everything runs in the page: the files are read
  * into memory, changed and handed back as a Blob. Nothing is uploaded.
  */
-import { PDFDocument, degrees } from "pdf-lib";
+import { PDFDocument, degrees, type PDFPage } from "pdf-lib";
 import { fitImage, pageFor, type Orientation, type PageSize } from "./pages";
 
 export type EncodedImage = { bytes: Uint8Array; kind: "jpg" | "png"; width: number; height: number };
@@ -92,3 +92,29 @@ export async function deletePages(data: ArrayBuffer | Uint8Array, pages: number[
 }
 
 export { toBlob as pdfBlob };
+
+/**
+ * A new PDF from pages of one or more PDFs, in the given order, each turned
+ * by an extra multiple of 90°. Pages from one source are copied in a single
+ * pass so fonts and images they share are stored once.
+ */
+export async function organizePdf(
+  sources: (ArrayBuffer | Uint8Array)[],
+  order: { file: number; index: number; rotate: number }[],
+): Promise<Uint8Array> {
+  const out = await PDFDocument.create();
+  const copied = new Map<string, PDFPage>();
+  for (const [file, data] of sources.entries()) {
+    const wanted = [...new Set(order.filter((o) => o.file === file).map((o) => o.index))];
+    if (!wanted.length) continue;
+    const pages = await out.copyPages(await load(data), wanted);
+    wanted.forEach((index, k) => copied.set(`${file}:${index}`, pages[k]!));
+  }
+  for (const o of order) {
+    const page = copied.get(`${o.file}:${o.index}`)!;
+    page.setRotation(degrees((page.getRotation().angle + o.rotate) % 360));
+    out.addPage(page);
+  }
+  out.setProducer("ilovetoconvert.com");
+  return out.save();
+}

@@ -20,6 +20,8 @@ export const TOOL_COMPONENTS: Record<ToolId, ToolComponent> = {
   qpdf: lazy(() => import("./QpdfTool")),
   "ppt-to-pdf": lazy(() => import("./PptToPdf")),
   ocr: lazy(() => import("./OcrTool")),
+  "organize-pdf": lazy(() => import("./OrganizePdf")),
+  "sign-pdf": lazy(() => import("./SignPdf")),
 };
 
 export const TOOL_STYLE: Record<ToolId, { icon: string; color: string }> = {
@@ -38,4 +40,6 @@ export const TOOL_STYLE: Record<ToolId, { icon: string; color: string }> = {
   qpdf: { icon: "M6 11h12v10H6z M8.5 11V8a3.5 3.5 0 0 1 7 0v3 M12 15v2", color: "#475569" },
   "ppt-to-pdf": { icon: "M3 5h18v12H3z M12 17v4 M8 21h8 M8 13l3-3 2 2 3-3", color: "#c2410c" },
   ocr: { icon: "M4 8V5h3 M17 5h3v3 M20 16v3h-3 M7 19H4v-3 M8 10h8 M8 14h5", color: "#0e7490" },
+  "organize-pdf": { icon: "M4 4h6v7H4z M14 4h6v7h-6z M4 15h6v5H4z M14 15h6v5h-6z", color: "#7c3aed" },
+  "sign-pdf": { icon: "M3 17c3-1 4-9 6-9s0 9 2 9 2-4 4-4 1 3 3 3 M3 21h18", color: "#0f766e" },
 };
