@@ -200,7 +200,7 @@ if (suites.has("search")) {
   const page = await browser.newPage();
   await page.setViewport({ width: 1280, height: 900 });
   await page.goto(base + "/", { waitUntil: "networkidle0" });
-  for (const [q, first] of [["jpeg to pdf", "JPG to PDF"], ["iphone", "HEIC to JPG"], ["combine pdf", "Merge PDF"], ["password", "Protect PDF"], ["pdf word", "PDF to Word"], ["smanji", "Compress images"]]) {
+  for (const [q, first] of [["jpeg to pdf", "JPG to PDF"], ["iphone", "HEIC to JPG"], ["combine pdf", "Merge PDF"], ["password", "Protect PDF"], ["pdf word", "PDF to Word"], ["smanji", "Compress images"], ["image 100kb", "Compress image to 100 KB"], ["pdf under 1mb", "Compress PDF to 1 MB"]]) {
     await page.click(".search.hero input", { clickCount: 3 });
     await page.keyboard.press("Backspace");
     await page.type(".search.hero input", q);
@@ -274,6 +274,61 @@ if (suites.has("extra")) {
     await page.waitForSelector(".options");
     await go(page);
     ok("compress text-only PDF keeps the original", /already well compressed/.test(await hint(page)));
+    await page.close();
+  }
+  {
+    const imgs = ["big.jpg", "iphone.heic"].filter(has);
+    const { page, dir } = await open("compress-image-to-100kb");
+    await upload(page, imgs);
+    await page.waitForSelector(".files li");
+    await go(page);
+    const files = await downloads(page, dir, imgs.length);
+    const sizes = files.map((f) => fs.statSync(f).size);
+    ok("image → under 100 KB", files.length === imgs.length && sizes.every((b) => b <= 100 * 1024) && sizes.every((b) => b > 60 * 1024), sizes.map((b) => `${(b / 1024).toFixed(0)} KB`).join(", "));
+    await page.close();
+  }
+  {
+    const { page, dir } = await open("compress-image-to-20kb");
+    await upload(page, ["big.jpg"]);
+    await page.waitForSelector(".files li");
+    await go(page);
+    const [file] = await downloads(page, dir, 1);
+    const b = file ? fs.statSync(file).size : Infinity;
+    ok("image → under 20 KB", b <= 20 * 1024, `${(b / 1024).toFixed(1)} KB`);
+    await page.close();
+  }
+  {
+    const { page, dir } = await open("compress-png");
+    await upload(page, ["shot.png", "wide.png"]);
+    await page.waitForSelector(".files li");
+    await go(page);
+    const files = await downloads(page, dir, 2);
+    const shot = files.find((f) => f.includes("shot")), wide = files.find((f) => f.includes("wide"));
+    const before = fs.statSync(path.join(FX, "shot.png")).size, after = shot ? fs.statSync(shot).size : before;
+    const png = shot ? fs.readFileSync(shot) : Buffer.alloc(32);
+    // IHDR: width at 16, colour type 3 (palette) at 25
+    ok("PNG → 256 colours, still PNG", png.readUInt32BE(16) === 1400 && png[25] === 3 && after < before * 0.6, `${(before / 1024).toFixed(0)} KB → ${(after / 1024).toFixed(0)} KB`);
+    const w = wide ? fs.readFileSync(wide) : Buffer.alloc(32);
+    // transparency survives as a tRNS chunk next to the palette
+    ok("PNG compression keeps transparency", w[25] === 3 && w.includes(Buffer.from("tRNS")));
+    await page.close();
+  }
+  {
+    const { page, dir } = await open("compress-pdf-to-1mb");
+    await upload(page, ["photos.pdf"]);
+    await page.waitForSelector(".options");
+    await go(page);
+    const [file] = await downloads(page, dir, 1);
+    const b = file ? fs.statSync(file).size : Infinity;
+    ok("PDF → under 1 MB", b <= 1024 * 1024 && (await pdfPages(file)) === 3, `${(b / 1024).toFixed(0)} KB`);
+    await page.close();
+  }
+  {
+    const { page } = await open("compress-pdf-to-200kb");
+    await upload(page, ["a.pdf"]);
+    await page.waitForSelector(".options");
+    await go(page);
+    ok("PDF already under target", /already under 200 KB/.test(await hint(page)));
     await page.close();
   }
   {

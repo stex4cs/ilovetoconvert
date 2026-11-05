@@ -49,6 +49,7 @@ put("photo.jpg", await draw(1600, 1200, "image/jpeg", { label: "PHOTO", noise: t
 put("tall.jpg", await draw(900, 1600, "image/jpeg", { label: "TALL" }));
 put("wide.png", await draw(1600, 900, "image/png", { label: "WIDE", transparent: true }));
 put("big.jpg", await draw(3200, 2400, "image/jpeg", { label: "BIG", noise: true }));
+put("shot.png", await draw(1400, 900, "image/png", { label: "SHOT", noise: true }));
 await browser.close();
 put("logo.svg", `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80"><rect width="120" height="80" rx="14" fill="#6366f1"/><path d="M30 32h52l-12-12M90 48H38l12 12" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>\n`);
 

@@ -41,7 +41,7 @@ const SYNONYMS: Record<string, string> = {
   convert: "converter", konvertuj: "converter", pretvori: "converter",
 };
 
-const STOP = new Set(["to", "in", "into", "u", "from", "a", "the", "and", "i", "file", "files", "online", "free"]);
+const STOP = new Set(["to", "in", "into", "u", "from", "a", "the", "and", "i", "file", "files", "online", "free", "under", "below", "less", "than", "max", "maximum", "ispod", "do"]);
 
 /** Lowercase, no diacritics, split into words, synonyms applied, stop words dropped. */
 export function words(text: string): string[] {
@@ -50,6 +50,7 @@ export function words(text: string): string[] {
     .normalize("NFKD")
     .replace(/[̀-ͯ]/g, "")
     .replace(/đ/g, "dj")
+    .replace(/(\d)(kb|mb)\b/g, "$1 $2")
     .split(/[^a-z0-9]+/)
     .filter(Boolean)
     .map((w) => SYNONYMS[w] ?? w)

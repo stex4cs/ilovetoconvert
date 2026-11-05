@@ -19,6 +19,10 @@ export type Preset = {
   mode?: "ranges" | "each" | "delete";
   target?: "docx" | "txt" | "images";
   qpdf?: "protect" | "unlock" | "repair";
+  /** Image: aim for this size in KB. PDF: aim for this size in KB. */
+  targetKB?: number;
+  /** PNG: reduce to this many colours (0 = lossless). */
+  pngColors?: number;
 };
 
 export type Category = "pdf" | "image" | "document";
@@ -748,6 +752,114 @@ const PAGES_RAW: Page[] = [
     related: ["pdf-to-jpg", "images-to-pdf"],
   },
 ];
+
+/* ---------- compression family ---------- */
+
+const IMAGE_TARGETS: { kb: number; uses: string }[] = [
+  { kb: 20, uses: "signature scans and passport-style photos on government and exam portals, which often cap uploads at 20 KB" },
+  { kb: 50, uses: "job applications, university and exam registration forms, and ID photo uploads, where 50 KB is a common limit" },
+  { kb: 100, uses: "visa and permit applications, online forms and profile pictures that accept up to 100 KB" },
+  { kb: 200, uses: "application portals, marketplaces and CMS fields with a 200 KB limit, while keeping photos sharp" },
+  { kb: 1024, uses: "email attachments, chat apps and websites, where 1 MB keeps a photo looking great and loading fast" },
+];
+const kbLabel = (kb: number) => (kb >= 1024 ? `${kb / 1024} MB` : `${kb} KB`);
+
+for (const { kb, uses } of IMAGE_TARGETS) {
+  const size = kbLabel(kb);
+  PAGES_RAW.push({
+    slug: `compress-image-to-${kb >= 1024 ? `${kb / 1024}mb` : `${kb}kb`}`,
+    tool: "convert-images",
+    preset: { type: "image/jpeg", targetKB: kb },
+    category: "image",
+    label: `Compress image to ${size}`,
+    title: `Compress Image to ${size}: JPG Under ${size}, Free | ${BRAND}`,
+    description: `Make a photo or scan smaller than ${size} for an upload limit. The best quality that fits is found automatically. Free, in your browser, nothing uploaded.`,
+    h1: `Compress an image to ${size}`,
+    lead: `Get a photo, scan or screenshot under ${size} in one step. The converter finds the highest quality that still fits, and only shrinks the dimensions if it has to.`,
+    about: {
+      heading: `Where a ${size} limit comes up`,
+      body: [
+        `Typical places: ${uses}.`,
+        "Quality is searched first at full size; the image is only scaled down when no quality setting fits. HEIC photos from an iPhone work too, and come out as JPG.",
+      ],
+    },
+    steps: ["Drop your image into the box above.", `${size} is already selected as the target.`, "Click Convert and download the image."],
+    faq: [
+      { q: `What if the image can't get under ${size}?`, a: "Very large or very detailed images may need to be scaled down a lot. The tool tells you when the target can't be reached and gives you the smallest version it could make." },
+      { q: "Can I compress several images at once?", a: "Yes, each one is fitted to the target separately; download them one by one or as a ZIP." },
+      PRIVACY_FAQ,
+    ],
+    related: [],
+  });
+}
+
+PAGES_RAW.push(
+  {
+    slug: "compress-jpeg",
+    tool: "convert-images",
+    preset: { type: "image/jpeg", quality: 0.75, maxSide: 2048 },
+    category: "image",
+    label: "Compress JPEG",
+    title: `Compress JPEG: Reduce JPG File Size Free, No Upload | ${BRAND}`,
+    description: "Shrink JPG photos for email, web and upload limits with no visible loss. Batch, free, in your browser, nothing uploaded.",
+    h1: "Compress JPEG images",
+    lead: "Make JPG photos a fraction of their size with no visible difference: dimensions brought down to what screens actually show, quality set where artefacts stay invisible.",
+    about: { heading: "Smaller JPGs without visible loss", body: [F.jpg.about, "Phone photos are usually 3 to 6 MB. At 2048 px and 75% quality they typically drop to 300 to 600 KB and still look the same on any screen."] },
+    steps: ["Drop your JPG files into the box above.", "75% quality and 2048 px are preset; adjust if you like, or pick a target size.", "Click Convert and download."],
+    faq: [{ q: "Is this lossless?", a: "No: JPEG compression always drops some detail, which is why the files get so much smaller. For lossless images use PNG." }, PRIVACY_FAQ, FREE_FAQ],
+    related: [],
+  },
+  {
+    slug: "compress-png",
+    tool: "convert-images",
+    preset: { type: "image/png", pngColors: 256 },
+    category: "image",
+    label: "Compress PNG",
+    title: `Compress PNG: Smaller PNG Files, Transparency Kept | ${BRAND}`,
+    description: "Shrink PNG screenshots, logos and graphics by reducing them to 256 colours, transparency kept and still a PNG. Free, in your browser, nothing uploaded.",
+    h1: "Compress PNG images",
+    lead: "Make PNG screenshots, logos and graphics much smaller while keeping them PNG, transparency included, by reducing them to a palette of 256 colours.",
+    about: {
+      heading: "How PNG compression works",
+      body: [
+        F.png.about,
+        "A normal PNG can store millions of colours. Most screenshots and graphics use far fewer, so reducing them to the best 256 usually cuts the file by 50 to 80% with no difference you can see. Photos saved as PNG shrink more as JPG or WebP.",
+      ],
+    },
+    steps: ["Drop your PNG files into the box above.", "256 colours is preset; choose 64 for the smallest files, or All for lossless.", "Click Convert and download."],
+    faq: [{ q: "Is transparency kept?", a: "Yes. The palette includes transparent and semi-transparent colours, so cut-outs and soft edges stay as they were." }, PRIVACY_FAQ, FREE_FAQ],
+    related: [],
+  },
+);
+
+for (const kb of [200, 500, 1024]) {
+  const size = kbLabel(kb);
+  PAGES_RAW.push({
+    slug: `compress-pdf-to-${kb >= 1024 ? `${kb / 1024}mb` : `${kb}kb`}`,
+    tool: "compress-pdf",
+    preset: { targetKB: kb },
+    category: "pdf",
+    label: `Compress PDF to ${size}`,
+    title: `Compress PDF to ${size}: Get Under the Limit, Free | ${BRAND}`,
+    description: `Reduce a PDF to under ${size} for upload portals and email. Images are re-compressed step by step until it fits; text stays sharp. Free, nothing uploaded.`,
+    h1: `Compress a PDF to ${size}`,
+    lead: `Get a PDF under ${size} for an upload portal or email. Stronger settings are tried one by one until it fits, and the text stays sharp and selectable.`,
+    about: {
+      heading: "How it gets under the limit",
+      body: [
+        "The images inside the PDF are re-encoded at lower resolutions and qualities, starting gently and stopping at the first setting that fits, so you get the best quality that meets the limit.",
+        "If the PDF is mostly text, fonts or vector drawings, there may be nothing left to shrink; the tool then tells you the smallest size it reached.",
+      ],
+    },
+    steps: ["Drop your PDF into the box above.", `${size} is already selected as the target.`, "Click Compress PDF and download. The size before and after is shown."],
+    faq: [
+      { q: "Will the text get blurry?", a: "No. Only the photos and scans inside are re-encoded; text and fonts are copied as they are." },
+      PRIVACY_FAQ,
+      FREE_FAQ,
+    ],
+    related: ["compress-pdf", "merge-pdf", "split-pdf"],
+  });
+}
 
 /* Related links for the generated pages: same family first, then popular ones. */
 const POPULAR = ["heic-to-jpg", "jpg-to-pdf", "merge-pdf", "word-to-pdf", "pdf-to-jpg", "compress-image"];

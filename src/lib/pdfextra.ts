@@ -159,10 +159,14 @@ export type CompressResult = { bytes: Uint8Array; before: number; after: number;
  * Text, vector graphics and fonts are not touched, so the text stays text.
  * An image is only replaced when the new one is smaller.
  */
-export async function compressPdf(data: ArrayBuffer, level: CompressLevel, onImage?: (i: number, n: number) => void): Promise<CompressResult> {
+export async function compressPdf(
+  data: ArrayBuffer,
+  level: CompressLevel | { maxSide: number; quality: number },
+  onImage?: (i: number, n: number) => void,
+): Promise<CompressResult> {
   const before = data.byteLength;
   const doc = await load(data.slice(0));
-  const { maxSide, quality } = LEVELS[level];
+  const { maxSide, quality } = typeof level === "string" ? LEVELS[level] : level;
   const images = doc.context
     .enumerateIndirectObjects()
     .filter(([, o]) => o instanceof PDFRawStream && name(o.dict.get(PDFName.of("Subtype"))) === "/Image") as [import("pdf-lib").PDFRef, PDFRawStream][];
@@ -221,4 +225,34 @@ export async function repairPdf(data: ArrayBuffer): Promise<{ bytes: Uint8Array;
   const pages = doc.getPageCount();
   if (!pages) throw new Error("no pages");
   return { bytes: await doc.save({ useObjectStreams: true }), pages };
+}
+
+const TARGET_STEPS = [
+  { maxSide: 2400, quality: 0.8 },
+  { maxSide: 2000, quality: 0.7 },
+  { maxSide: 1600, quality: 0.6 },
+  { maxSide: 1300, quality: 0.5 },
+  { maxSide: 1000, quality: 0.42 },
+  { maxSide: 800, quality: 0.36 },
+  { maxSide: 600, quality: 0.3 },
+];
+
+/** Tries stronger settings until the PDF fits; returns the first that fits, or the smallest reached. */
+export async function compressPdfToTarget(
+  data: ArrayBuffer,
+  targetBytes: number,
+  onStep?: (step: number, steps: number) => void,
+): Promise<CompressResult & { fits: boolean }> {
+  if (data.byteLength <= targetBytes) {
+    return { bytes: new Uint8Array(data.slice(0)), before: data.byteLength, after: data.byteLength, images: 0, recompressed: 0, fits: true };
+  }
+  let smallest: CompressResult | null = null;
+  for (const [i, step] of TARGET_STEPS.entries()) {
+    onStep?.(i + 1, TARGET_STEPS.length);
+    const r = await compressPdf(data, step);
+    if (!smallest || r.after < smallest.after) smallest = r;
+    if (r.after <= targetBytes) return { ...r, fits: true };
+    if (r.recompressed === 0) break; // no images to squeeze: stronger settings won't help
+  }
+  return { ...smallest!, fits: false };
 }
