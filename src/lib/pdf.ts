@@ -32,8 +32,8 @@ export async function imagesToPdf(
     // PDF coordinates start bottom-left; fitImage centres, so y needs no flip.
     page.drawImage(embedded, fitImage(img.width, img.height, pw, ph, margin));
   }
-  doc.setProducer("Konvertuj");
-  doc.setCreator("Konvertuj");
+  doc.setProducer("ilovetoconvert.com");
+  doc.setCreator("ilovetoconvert.com");
   return doc.save();
 }
 

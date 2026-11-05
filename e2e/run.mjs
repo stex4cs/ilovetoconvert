@@ -1,6 +1,6 @@
 // End-to-end checks for every tool, in a real browser.
 // Usage: node e2e/run.mjs [baseUrl] [suite...]   (no baseUrl: serves dist/ itself)
-// Suites: core search word extra qpdf (default: all). Run `node e2e/make-fixtures.mjs` first.
+// Suites: core search word extra qpdf ocr (default: all). Run `node e2e/make-fixtures.mjs` first.
 import fs from "node:fs";
 import path from "node:path";
 import puppeteer from "puppeteer";
@@ -13,7 +13,7 @@ const FX = path.join(HERE, ".fixtures");
 const OUT = path.join(HERE, ".out");
 const args = process.argv.slice(2);
 let base = args[0]?.startsWith("http") ? args.shift() : null;
-const suites = new Set(args.length ? args : ["core", "search", "word", "extra", "qpdf"]);
+const suites = new Set(args.length ? args : ["core", "search", "word", "extra", "qpdf", "ocr"]);
 let server;
 if (!base) ({ server, url: base } = await serve(path.join(HERE, "..", "dist")));
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -67,6 +67,16 @@ async function downloads(page, dir, expected) {
 }
 const pdfPages = async (file) => (await PDFDocument.load(fs.readFileSync(file), { ignoreEncryption: true })).getPageCount();
 const docxXml = async (file) => (await JSZip.loadAsync(fs.readFileSync(file))).file("word/document.xml").async("string");
+/** The text of every page of a PDF, as pdf.js (and so a browser's PDF viewer) finds it. */
+async function pdfText(file) {
+  const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
+  const task = pdfjs.getDocument({ data: new Uint8Array(fs.readFileSync(file)), verbosity: 0 });
+  const doc = await task.promise;
+  const pages = [];
+  for (let n = 1; n <= doc.numPages; n++) pages.push((await (await doc.getPage(n)).getTextContent()).items.map((i) => i.str).join(" ").replace(/\s+/g, " "));
+  await task.destroy();
+  return pages;
+}
 const hint = (page) => page.$$eval(".hint", (els) => els.map((e) => e.textContent).join(" | "));
 
 /* ---------------- core tools ---------------- */
@@ -351,6 +361,58 @@ if (suites.has("extra")) {
     await go(page);
     const [file] = await downloads(page, dir, 1);
     ok("watermark, Cyrillic, tiled", file && (await pdfPages(file)) === 1);
+    await page.close();
+  }
+}
+
+/* ---------------- OCR ---------------- */
+if (suites.has("ocr")) {
+  {
+    const { page, dir } = await open("image-to-text");
+    await upload(page, ["receipt.png"]);
+    await page.waitForSelector(".files li");
+    const err = await go(page);
+    const [file] = await downloads(page, dir, 1);
+    const text = file ? fs.readFileSync(file, "utf8") : "";
+    const shown = await page.$eval(".ocr-text textarea", (e) => e.value).catch(() => "");
+    ok("image → text (OCR)", !err && /INVOICE 2047/.test(text) && /1250\.00 EUR/.test(text) && shown.includes("Thank you"), JSON.stringify(text.slice(0, 60)));
+    await page.close();
+  }
+  {
+    const { page, dir } = await open("image-to-text");
+    await upload(page, ["cyrillic.png"]);
+    await page.waitForSelector(".files li");
+    await page.select(".field select", "srp");
+    await go(page);
+    const [file] = await downloads(page, dir, 1);
+    const text = file ? fs.readFileSync(file, "utf8") : "";
+    ok("OCR Serbian Cyrillic", /Добар дан/.test(text) && /Београд/.test(text), JSON.stringify(text.slice(0, 50)));
+    await page.close();
+  }
+  {
+    const { page, dir } = await open("ocr-pdf");
+    await upload(page, ["scan.pdf"]);
+    await page.waitForSelector(".files li");
+    await go(page);
+    const [file] = await downloads(page, dir, 1);
+    const text = file ? await pdfText(file) : [];
+    const before = await pdfText(path.join(FX, "scan.pdf"));
+    ok(
+      "OCR PDF: scanned page becomes searchable",
+      !before[0].trim() && /warehouse inventory/.test(text[0] ?? "") && (text[1] ?? "").split("already").length === 2,
+      JSON.stringify((text[0] ?? "").slice(0, 60)),
+    );
+    ok("OCR PDF: pages with text are left alone", /1 of 2 pages already had real text/.test(await hint(page)));
+    await page.close();
+  }
+  {
+    const { page, dir } = await open("ocr-pdf");
+    await upload(page, ["receipt.png", "scanpage.jpg"]);
+    await page.waitForFunction(() => document.querySelectorAll(".files li").length === 2);
+    await go(page);
+    const [file] = await downloads(page, dir, 1);
+    const text = file ? await pdfText(file) : [];
+    ok("photos → one searchable PDF", text.length === 2 && /INVOICE/.test(text[0]) && /shipments/.test(text[1]), `pages=${text.length}`);
     await page.close();
   }
 }

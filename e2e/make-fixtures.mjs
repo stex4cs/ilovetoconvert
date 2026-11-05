@@ -50,6 +50,28 @@ put("tall.jpg", await draw(900, 1600, "image/jpeg", { label: "TALL" }));
 put("wide.png", await draw(1600, 900, "image/png", { label: "WIDE", transparent: true }));
 put("big.jpg", await draw(3200, 2400, "image/jpeg", { label: "BIG", noise: true }));
 put("shot.png", await draw(1400, 900, "image/png", { label: "SHOT", noise: true }));
+// text for OCR: printed lines on white, like a screenshot or a scanned page
+const textImage = (w, h, lines, type, font = "34px Georgia, serif") =>
+  page.evaluate(
+    async (w, h, lines, type, font) => {
+      const c = document.createElement("canvas");
+      c.width = w;
+      c.height = h;
+      const x = c.getContext("2d");
+      x.fillStyle = "#ffffff";
+      x.fillRect(0, 0, w, h);
+      x.fillStyle = "#111111";
+      x.font = font;
+      const size = parseInt(font, 10);
+      lines.forEach((l, i) => x.fillText(l, size * 1.5, size * 2.5 + i * size * 1.6));
+      const blob = await new Promise((r) => c.toBlob(r, type, 0.9));
+      return [...new Uint8Array(await blob.arrayBuffer())];
+    },
+    w, h, lines, type, font,
+  ).then((a) => Buffer.from(a));
+put("receipt.png", await textImage(1100, 420, ["INVOICE 2047", "Total due: 1250.00 EUR", "Thank you for your business."], "image/png"));
+put("cyrillic.png", await textImage(1100, 300, ["Добар дан, ово је тест.", "Београд, новембар"], "image/png", "40px Arial, sans-serif"));
+put("scanpage.jpg", await textImage(1240, 1754, ["Quarterly Statement", "", "The warehouse inventory was counted", "on the first Monday of the month.", "All shipments arrived on schedule."], "image/jpeg", "40px Georgia, serif"));
 await browser.close();
 put("logo.svg", `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80"><rect width="120" height="80" rx="14" fill="#6366f1"/><path d="M30 32h52l-12-12M90 48H38l12 12" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>\n`);
 
@@ -127,6 +149,17 @@ await textPdf("b.pdf", 2, "Beta");
   const jpg = await d.embedJpg(fs.readFileSync(f("big.jpg")));
   for (let i = 0; i < 3; i++) d.addPage([595, 842]).drawImage(jpg, { x: 20, y: 200, width: 555, height: 416 });
   put("photos.pdf", await d.save());
+}
+{ // scanned: page 1 is only a picture of text, page 2 has real text
+  const d = await PDFDocument.create();
+  const jpg = await d.embedJpg(fs.readFileSync(f("scanpage.jpg")));
+  d.addPage([595, 842]).drawImage(jpg, { x: 0, y: 0, width: 595, height: 842 });
+  const font = await d.embedFont(StandardFonts.Helvetica);
+  const p = d.addPage([595, 842]);
+  ["This second page was typed, not scanned, so it already", "has a text layer that search and copy can use as it is."].forEach((t, i) =>
+    p.drawText(t, { x: 50, y: 760 - i * 16, size: 12, font }),
+  );
+  put("scan.pdf", await d.save());
 }
 { // damaged: the startxref offset points nowhere
   const good = fs.readFileSync(f("a.pdf"), "latin1");

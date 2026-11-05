@@ -36,7 +36,8 @@ const SYNONYMS: Record<string, string> = {
   lock: "protect", password: "protect", encrypt: "protect", secure: "protect", zakljucaj: "protect", lozinka: "protect", sifra: "protect",
   decrypt: "unlock", otkljucaj: "unlock", unprotect: "unlock",
   fix: "repair", corrupted: "repair", damaged: "repair", broken: "repair", popravi: "repair",
-  stamp: "watermark", confidential: "watermark", draft: "watermark", logo: "watermark", zig: "watermark",
+  stamp: "watermark",
+  prepoznaj: "recognize", prepoznavanje: "recognition", skeniran: "scanned", skenirani: "scanned", sken: "scan", recognise: "recognize", pretraziv: "searchable", confidential: "watermark", draft: "watermark", logo: "watermark", zig: "watermark",
   resize: "resize", scale: "resize", dimenzije: "resize",
   convert: "converter", konvertuj: "converter", pretvori: "converter",
 };
@@ -69,6 +70,7 @@ const INDEX: Entry[] = PAGES.map((page, order) => {
   if (page.slug.startsWith("pdf-to-")) extra.push("images");
   if (page.slug.includes("pages")) extra.push("split");
   if (page.slug === "compress-image") extra.push("size", "kb", "mb");
+  if (page.tool === "ocr") extra.push("ocr", "scan", "scanned", "recognize", "recognition", "extract", "text", "searchable", "copy");
   return {
     page,
     words: new Set(words([page.label, page.h1, page.slug, ...extra].join(" "))),

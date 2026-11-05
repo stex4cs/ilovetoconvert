@@ -170,8 +170,10 @@ main { max-width: 1080px; width: 100%; margin: 0 auto; padding: 8px 20px 48px; f
 .choice button.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
 .field { display: grid; }
 .check { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); }
-.field input { font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); }
-.field input:focus { outline: 2px solid var(--accent); border-color: transparent; }
+.field input, .field select { font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); }
+.field input:focus, .field select:focus { outline: 2px solid var(--accent); border-color: transparent; }
+.ocr-text { display: grid; gap: 10px; justify-items: end; margin-top: 18px; }
+.ocr-text textarea { width: 100%; min-height: 240px; resize: vertical; font: 14px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; padding: 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); box-sizing: border-box; }
 
 .primary { width: 100%; padding: 15px 20px; border: 0; border-radius: 12px; background: var(--accent); color: var(--accent-ink); font-size: 16px; font-weight: 700; margin-top: 4px; }
 .primary:hover:not(:disabled) { filter: brightness(1.08); }

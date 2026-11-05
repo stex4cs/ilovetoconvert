@@ -10,14 +10,15 @@ export const BRAND = "ilovetoconvert";
 export type ToolId =
   | "images-to-pdf" | "word-to-pdf" | "excel-to-pdf" | "merge-pdf"
   | "split-pdf" | "rotate-pdf" | "pdf-to-images" | "convert-images" | "pdf-to-word"
-  | "compress-pdf" | "page-numbers" | "watermark-pdf" | "qpdf" | "ppt-to-pdf";
+  | "compress-pdf" | "page-numbers" | "watermark-pdf" | "qpdf" | "ppt-to-pdf"
+  | "ocr";
 
 export type Preset = {
   type?: "image/jpeg" | "image/png" | "image/webp" | "image/x-icon";
   quality?: number;
   maxSide?: number;
   mode?: "ranges" | "each" | "delete";
-  target?: "docx" | "txt" | "images";
+  target?: "docx" | "txt" | "images" | "pdf";
   qpdf?: "protect" | "unlock" | "repair";
   /** Image: aim for this size in KB. PDF: aim for this size in KB. */
   targetKB?: number;
@@ -715,7 +716,7 @@ const PAGES_RAW: Page[] = [
       ],
     },
     steps: ["Drop your PDF into the box above.", "Click Extract text.", "Download the .txt file."],
-    faq: [{ q: "Does it work on scanned PDFs?", a: "No. A scan contains pictures of text, not text; it needs OCR first." }, PRIVACY_FAQ, FREE_FAQ],
+    faq: [{ q: "Does it work on scanned PDFs?", a: "A scan contains pictures of text, not text, so use Scanned PDF to text, which reads it with OCR." }, PRIVACY_FAQ, FREE_FAQ],
     related: ["pdf-to-word", "extract-images-from-pdf", "split-pdf"],
   },
   {
@@ -752,6 +753,109 @@ const PAGES_RAW: Page[] = [
     related: ["pdf-to-jpg", "images-to-pdf"],
   },
 ];
+
+/* ---------- OCR ---------- */
+
+const OCR_FAQ = [
+  {
+    q: "Which languages can it read?",
+    a: "English, Serbian (Latin and Cyrillic), Croatian, Bosnian, Slovenian, Macedonian, Bulgarian, German, French, Spanish, Italian, Portuguese, Dutch, Polish, Czech, Slovak, Hungarian, Romanian, Turkish, Greek, Russian, Ukrainian and the Nordic languages. English is always read alongside the language you pick.",
+  },
+  {
+    q: "Are my files uploaded for OCR?",
+    a: "No. Text recognition runs in your browser with Tesseract compiled to WebAssembly. Only the engine and the language model are downloaded, once, and then kept in your browser; your images and PDFs never leave your device.",
+  },
+  {
+    q: "How accurate is it?",
+    a: "Very good on clear printed text: scans, screenshots, photos of documents taken straight on. Handwriting, very small or blurry text and photos taken at a steep angle come out worse.",
+  },
+];
+
+PAGES_RAW.push(
+  {
+    slug: "image-to-text",
+    tool: "ocr",
+    preset: { target: "txt" },
+    category: "image",
+    label: "Image to text (OCR)",
+    title: `Image to Text: Free OCR, Copy Text From Images | ${BRAND}`,
+    description: "Extract text from photos, screenshots and scans with OCR, in 27 languages incl. Serbian Cyrillic. Copy it or save as .txt. Free, runs in your browser, nothing uploaded.",
+    h1: "Image to text (OCR)",
+    lead: "Copy the text out of a photo, screenshot or scanned page. The text is recognised right in your browser and shown ready to copy, or saved as a .txt file.",
+    about: {
+      heading: "OCR that stays on your device",
+      body: [
+        "OCR (optical character recognition) turns a picture of text back into text you can copy, edit and search. Here it runs on Tesseract, the open-source engine behind most OCR tools, compiled to WebAssembly so it works inside the browser.",
+        "Works with JPG, PNG, WebP, HEIC photos from an iPhone, multi-page TIFF scans and scanned PDFs. Small screenshots are scaled up before reading, which noticeably improves accuracy.",
+      ],
+    },
+    steps: ["Drop images or a scanned PDF into the box above.", "Pick the language of the text.", "Click Extract text, then copy the text or download it."],
+    faq: [...OCR_FAQ, FREE_FAQ],
+    related: ["ocr-pdf", "pdf-to-text", "heic-to-jpg"],
+  },
+  {
+    slug: "jpg-to-text",
+    tool: "ocr",
+    preset: { target: "txt" },
+    category: "image",
+    label: "JPG to text",
+    title: `JPG to Text: Extract Text From a Photo, Free OCR | ${BRAND}`,
+    description: "Turn a JPG photo of a document, receipt or sign into text you can copy. OCR in 27 languages, free, in your browser, nothing uploaded.",
+    h1: "JPG to text",
+    lead: "Turn a photo of a document, receipt, whiteboard or sign into text you can copy and edit.",
+    about: {
+      heading: "From a phone photo to editable text",
+      body: [
+        "Take the photo straight on and in good light, and the text comes out close to perfect. The result appears ready to copy, and can be saved as a .txt file.",
+        F.jpg.about,
+      ],
+    },
+    steps: ["Drop your JPG photos into the box above.", "Pick the language of the text.", "Click Extract text, then copy or download it."],
+    faq: [...OCR_FAQ, PRIVACY_FAQ],
+    related: ["image-to-text", "ocr-pdf", "jpg-to-pdf"],
+  },
+  {
+    slug: "ocr-pdf",
+    tool: "ocr",
+    preset: { target: "pdf" },
+    category: "pdf",
+    label: "OCR PDF",
+    title: `OCR PDF: Make a Scanned PDF Searchable, Free | ${BRAND}`,
+    description: "Add a hidden text layer to scanned PDFs so you can search, select and copy their text. The pages look exactly the same. 27 languages, free, nothing uploaded.",
+    h1: "OCR PDF: make a scan searchable",
+    lead: "Turn a scanned PDF into one you can search with Ctrl+F, select and copy from. The pages look exactly as before; invisible text is laid over each one.",
+    about: {
+      heading: "A searchable PDF that looks like the original",
+      body: [
+        "Every page is rendered at 300 dpi and read, and the recognised words are placed invisibly exactly over the words in the scan, the way professional scanners do it. Pages that already contain real text are left untouched.",
+        "Scanned photos work too: drop several JPG or HEIC pages and you get one searchable PDF. Want the text itself? Choose Text (.txt) instead.",
+      ],
+    },
+    steps: ["Drop your scanned PDF (or photos of pages) into the box above.", "Pick the language of the text.", "Click Extract text and download the searchable PDF."],
+    faq: [...OCR_FAQ, { q: "Will the file look different?", a: "No. The page images are kept as they are and the text layer is invisible; only searching, selecting and copying change." }],
+    related: ["scanned-pdf-to-text", "pdf-to-word", "compress-pdf"],
+  },
+  {
+    slug: "scanned-pdf-to-text",
+    tool: "ocr",
+    preset: { target: "txt" },
+    category: "pdf",
+    label: "Scanned PDF to text",
+    title: `Scanned PDF to Text: OCR a Scan to TXT, Free | ${BRAND}`,
+    description: "Get the text out of a scanned PDF with OCR, page by page, as a .txt file or ready to copy. 27 languages, free, in your browser, nothing uploaded.",
+    h1: "Scanned PDF to text",
+    lead: "Read the text out of a scanned PDF, page by page, and copy it or save it as a .txt file.",
+    about: {
+      heading: "When copy and paste gives you nothing",
+      body: [
+        "A scanned PDF holds pictures of pages, so there is no text to copy. OCR reads those pictures and gives the text back. PDFs that already have real text are read directly, without OCR.",
+      ],
+    },
+    steps: ["Drop your scanned PDF into the box above.", "Pick the language of the text.", "Click Extract text, then copy or download it."],
+    faq: [...OCR_FAQ, PRIVACY_FAQ],
+    related: ["ocr-pdf", "pdf-to-text", "pdf-to-word"],
+  },
+);
 
 /* ---------- compression family ---------- */
 
@@ -875,6 +979,10 @@ export const PAGES = PAGES_RAW;
 const SPECIAL_HOWTO: Record<string, string> = {
   "favicon-generator": "How to make a favicon.ico",
   "image-converter": "How to convert images",
+  "image-to-text": "How to extract text from an image",
+  "jpg-to-text": "How to extract text from a JPG photo",
+  "ocr-pdf": "How to make a scanned PDF searchable",
+  "scanned-pdf-to-text": "How to get the text out of a scanned PDF",
 };
 const VERBS = /^(Convert|Merge|Split|Extract|Delete|Rotate|Compress|Resize|Protect|Unlock|Repair|Add|Sign|Organize|Scan|Remove|Crop|Flip|Make)\b/;
 

@@ -215,7 +215,7 @@ export function Results({ outputs }: { outputs: Output[] }) {
         ))}
       </ul>
       {outputs.length > 1 && (
-        <button className="primary" onClick={async () => save(await zip(outputs), "konvertuj.zip")}>
+        <button className="primary" onClick={async () => save(await zip(outputs), "ilovetoconvert.zip")}>
           {t("downloadZip")}
         </button>
       )}

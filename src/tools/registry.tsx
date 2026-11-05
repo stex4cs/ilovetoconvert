@@ -19,6 +19,7 @@ export const TOOL_COMPONENTS: Record<ToolId, ToolComponent> = {
   "watermark-pdf": lazy(() => import("./WatermarkPdf")),
   qpdf: lazy(() => import("./QpdfTool")),
   "ppt-to-pdf": lazy(() => import("./PptToPdf")),
+  ocr: lazy(() => import("./OcrTool")),
 };
 
 export const TOOL_STYLE: Record<ToolId, { icon: string; color: string }> = {
@@ -36,4 +37,5 @@ export const TOOL_STYLE: Record<ToolId, { icon: string; color: string }> = {
   "watermark-pdf": { icon: "M7 3h10v18H7z M9 15l6-6 M9.5 10.5h0 M14.5 14.5h0", color: "#be185d" },
   qpdf: { icon: "M6 11h12v10H6z M8.5 11V8a3.5 3.5 0 0 1 7 0v3 M12 15v2", color: "#475569" },
   "ppt-to-pdf": { icon: "M3 5h18v12H3z M12 17v4 M8 21h8 M8 13l3-3 2 2 3-3", color: "#c2410c" },
+  ocr: { icon: "M4 8V5h3 M17 5h3v3 M20 16v3h-3 M7 19H4v-3 M8 10h8 M8 14h5", color: "#0e7490" },
 };

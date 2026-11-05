@@ -1,0 +1,16 @@
+import fs from "node:fs";
+import puppeteer from "puppeteer";
+import { createWorker } from "tesseract.js";
+const b = await puppeteer.launch({ headless: true });
+const p = await b.newPage();
+await p.setViewport({ width: 900, height: 400 });
+await p.setContent(`<body style="font:28px Georgia;padding:30px">Invoice 2047<br>Total due: 1,250.00 EUR<br>Thank you for your business.</body>`);
+const png = await p.screenshot();
+await b.close();
+const w = await createWorker("eng", 1);
+const t = Date.now();
+const { data } = await w.recognize(Buffer.from(png), { pdfTextOnly: true }, { text: true, blocks: true, pdf: true });
+console.log("ms", Date.now() - t, JSON.stringify(data.text));
+console.log("pdf bytes", data.pdf?.length, "lines", data.blocks?.flatMap((b) => b.paragraphs.flatMap((p) => p.lines)).length);
+if (data.pdf) fs.writeFileSync("/private/tmp/claude-501/-Users-popzify1/2643313a-93c7-4a12-9b64-570cba3632fa/scratchpad/ocr.pdf", Buffer.from(data.pdf));
+await w.terminate();
